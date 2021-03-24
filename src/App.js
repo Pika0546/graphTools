@@ -1,25 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import {useState, useReducer} from 'react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+/* ======== Component ========*/ 
+import Intro from './components/Intro';
+import Navbar from './components/Navbar';
+import Canvas from './components/Canvas';
+
+
+/* ======== SCSS =========*/ 
+import './App.scss'
+
+// const defaultState = {
+//     matrix: [],
+//     action: 'default',/* default , adding, removing*/
+// }
+
+
+const App = () => {
+    const [userOption, setUserOption] = useState('');
+    /*UserOption = 1 => Adjacency Matrix*/
+    /*UserOption = 2 => Adjacency List*/
+    /*UserOption = 0 => Draw*/
+
+
+    const getUserOption = (option) =>{
+        setUserOption(option);
+    }
+
+    return (
+        <div className="container">
+            <Navbar></Navbar>
+            {/* <ResponMenu></ResponMenu> */}
+            {userOption==='' ? 
+                <Intro getUserOption={getUserOption}></Intro>:""
+            }
+            
+            <div className="graph-form">
+                {userOption === 1 ?
+                    <h1>Matrix</h1> :
+                    userOption === 2 ?
+                    <h1>List</h1> : ""
+                }
+            </div>
+            {userOption === 0 ? 
+                    <Canvas></Canvas>
+                : ""
+            }
+        </div>  
+    )
 }
 
-export default App;
+export default App

@@ -1,0 +1,10 @@
+.instruction{
+    width: 100%;
+    background-color: $glass-bg ;
+    margin-top: 10px;
+    &__content{
+        @include centerContent;
+        height: 40px;
+    }
+  
+}

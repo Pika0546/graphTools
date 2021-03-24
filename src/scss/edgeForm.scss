@@ -1,0 +1,95 @@
+/* ============ EDGE FORM ===============*/
+.edge-form{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    z-index: 500;
+    justify-content: center;
+    align-items: center;
+    // background-color: rgba(255, 255, 255, 0);
+    &__content{
+        padding:5px 20px;
+        @include respond(exml){
+            padding: 5px 10px;
+        }
+        background-color: rgb(255, 255, 255);
+        border: 2px solid black;
+        h1{
+            margin-bottom: 20px;
+        }
+        p{
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            .vertex{
+                position: relative;
+                display:inline-flex;
+            }
+        }
+        &__group{
+            margin-bottom: 8px ;
+            text-align: left;
+            .edgeWeight{
+                outline: none;
+                border: none;
+                background-color: rgb(226, 226, 226);
+                margin-left: 10px;
+                padding: 5px 10px;
+                @include respond(exml){
+                    width: 100%;
+                    margin: 0;
+                }
+            }
+            button{
+                background: none;
+                // background-color: rgba(255, 255, 255, 0.349);
+                outline: none;
+                border: none;
+                padding: 10px;
+                transition: .2s;
+                cursor: pointer;
+                &:hover{
+                    background-color: rgb(226, 226, 226);
+                }
+            }
+            .form-error{
+                display: block;
+                margin-top: 4px;
+                height: 15px;
+            }
+        }
+        .row-2{
+            display: flex;
+            justify-content: space-between;
+            
+            input{
+                display: none;
+            }
+            label{
+                display: block;
+                padding: 5px;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: .2s;
+                &:hover{
+                    background-color: rgb(226, 226, 226);
+
+                }
+            }
+            label.row-2__name{
+                padding: 5px 0;
+            }
+            label.on-selected{
+
+                background-color: rgb(226, 226, 226);
+            }
+        }
+        .row-3{
+            display: flex;
+            justify-content: space-around;
+        }
+    }
+}

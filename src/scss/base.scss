@@ -1,0 +1,46 @@
+:root{
+    --canvas-border-color: white;
+}
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+}
+
+body{
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+   @include main-bg;
+
+}
+
+ul{
+    list-style-type: none;
+}
+
+
+.brand{
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    .logo{
+        width: 32px;
+        height: auto;
+        margin-right: 10px;
+        @include respond(exml){
+            width: 26px;
+        }
+
+    }
+
+}
+
+
+
+.container{
+    position: relative;
+}

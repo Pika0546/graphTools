@@ -1,0 +1,58 @@
+.tools{
+    margin:20px 0; 
+    display: grid;
+   
+    grid-template-columns: repeat(6, 1fr);
+    // @include respond(exml){
+    //     grid-template-columns: repeat(3, 1fr);
+    // }
+    &__btn{
+        cursor: pointer;
+        background-color: $glass-bg;
+       
+        padding: 10px 0;
+        transition: .3s;
+        &:hover{
+            background-color: $glass-bg-hover;
+        }
+    }
+    &__text{
+       @include respond(exml){
+            display: none;
+       }
+    }
+    &__icon{
+        width: 22px;
+        height: auto;
+        display: none;
+        margin: 0 auto;
+        @include respond(exml){
+            display: block;
+       }
+    }
+    &__btn.is-active{
+        background-color: $glass-bg-hover;
+    }
+    &__dropdown{
+        position: relative;
+        &__content{
+            position: absolute;
+            background-color: $glass-bg;
+            top: 100%;
+            right: 0;
+            width: 100%;
+            @include respond(exml){
+                width: auto;
+            }
+            height: 0px;
+            overflow: hidden;z-index: 50;
+            .tools__btn:hover{
+                background-color: rgba(218, 218, 218, 0.842);
+
+            }
+        }
+        &:hover &__content{
+            height: auto;
+        }
+    }
+}

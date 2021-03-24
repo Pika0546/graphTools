@@ -1,0 +1,107 @@
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    z-index: 99999999;
+    .brand{
+        padding: 0 10px;
+        cursor: pointer;
+    }
+    &__list{
+        display: flex;
+        @include respond(ml){
+            display: none;
+        }
+        &__item{
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+       
+    }
+    border-bottom: 1px solid rgb(204, 204, 204);
+    &__button{
+       
+       
+        cursor: pointer;
+        margin: 5px;
+        width:3rem;
+        height: 3rem;
+        border-radius: 50%;
+        transition:all .2s;
+        background-color: $glass-bg;
+        
+        display: none;  
+        @include respond(ml){
+            @include centerContent;
+        }
+        &:hover{
+            background-color: $glass-bg-hover;
+        }
+        span{
+            display: block;
+            width: 2rem;
+            height: .2rem;
+            background-color: white;
+            position: relative;
+            transition: all 0.1s;
+            &:after, &:before {
+                content:"";
+                display: block;
+                width: 2rem;
+                height: .2rem;
+                background-color: white;
+                position: absolute;
+                transition: all 0.2s;
+                transform-origin: center center;
+            }
+            &:after {
+                top: .5rem;
+            }
+            &:before {
+                top: -0.5rem;
+            }
+
+        }
+    }
+    &__button.is-open{
+        span{
+            background-color: transparent;
+            &:after{
+                top: 0;
+                transform: rotate(-45deg);
+            }
+            &::before{
+                top: 0;
+                transform: rotate(45deg);
+            }
+        }
+    }
+}
+
+.menu{
+    @include main-bg;
+    // background-color: $glass-bg;
+    border-bottom: .5px solid white;
+    position: absolute;
+    width: 100%;
+    z-index: 100;
+    overflow: hidden;
+    height: 0;
+    transition:height 1s;
+    
+    @include centerContent;
+    &__content{
+        &__item{
+            cursor: pointer;
+            padding: 20px;
+        }
+    }
+    
+}
+
+.menu.is-open{
+    height: calc(100vh - 59px);
+    border-bottom: 2px solid white;
+}

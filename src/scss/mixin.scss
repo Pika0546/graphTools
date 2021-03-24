@@ -1,0 +1,51 @@
+@mixin  respond($breakpoint) {
+    
+    @if $breakpoint == exml{
+        @media (max-width: 575px){@content};
+    }
+
+    @if $breakpoint == ml{  
+        @media (max-width: 767px){@content}; //600px
+    }
+    @if $breakpoint == md{
+        @media (max-width: 991px){@content};
+    }
+    @if $breakpoint == lg{
+        @media (max-width: 1199px){@content};  //900px
+    }
+    @if $breakpoint == exlg{
+        @media (min-width: 1200px){@content}; //1200px
+    }
+    
+}
+
+@mixin main-bg{
+    background: #cc2b5e;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #753a88, #cc2b5e);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #753a88, #cc2b5e); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+@mixin text-gradient{
+    background: #cc2b5e;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #753a88, #cc2b5e);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #753a88, #cc2b5e); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */                    
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@mixin centerContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin horizontalCenter{
+    display: flex;
+    justify-content: center;
+}
+
+@mixin verticalCenter{
+    display: flex;
+    align-items: center;
+}
