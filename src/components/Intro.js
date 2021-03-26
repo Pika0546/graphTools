@@ -17,7 +17,7 @@ const Intro = ({getUserOption}) => {
                     <br></br>
                     It supports some familiar algorithms such as find the Mimimum Spanning Tree(MST), the Shortest path, Euler Circuit...
                 </p>
-                <p>Create your Graph now :</p>
+                
                 <div className="intro__content__buttons">
                     <button 
                         className="btn"

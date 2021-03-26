@@ -181,6 +181,8 @@
     }
 }
 
+
+/* ========== instruction ===============*/
 .instruction{
     
     &__content{
@@ -191,4 +193,51 @@
         font-size: 18px;
         // font-family: 'Fredoka One', cursive;
     }
+}
+
+/* ============== Matrix form ==============*/
+.matrix-form{
+
+    &__header{
+        text-align: center;
+        color: white;
+        font-family: 'Fredoka One', cursive;
+        h3{
+            font-weight: 200;
+            font-size: 22px;
+        }
+    }
+    &__form{
+        textarea{
+            font-family: 'Fredoka One', cursive;
+        }
+    }
+    &__text{
+       p{
+            font-size: 14px;
+            color: white;
+            span{
+                font-family: 'Fredoka One', cursive;
+                color: black;
+            }
+       }
+    }
+
+    &__buttons{
+        button{
+            font-family: 'Fredoka One', cursive;
+            color: white;
+            font-size: 16px;
+        }
+    }
+    &__btn{
+        button{
+            font-family: 'Fredoka One', cursive;
+            font-size: 18px;
+            color: white;
+        }
+    }
+
+   
+    
 }

@@ -5,15 +5,10 @@ import {useState, useReducer} from 'react'
 import Intro from './components/Intro';
 import Navbar from './components/Navbar';
 import Canvas from './components/Canvas';
-
+import MatrixForm from './components/MatrixForm';
 
 /* ======== SCSS =========*/ 
 import './App.scss'
-
-// const defaultState = {
-//     matrix: [],
-//     action: 'default',/* default , adding, removing*/
-// }
 
 
 const App = () => {
@@ -27,6 +22,22 @@ const App = () => {
         setUserOption(option);
     }
 
+    const handleCloseMatrixForm = () =>{
+        setUserOption(0);
+    }
+
+    const handleChangeMatrixForm = () =>{
+        if(userOption === 1){
+            setUserOption(2)
+        }else{
+            setUserOption(1);
+        }
+    }
+
+    const handleSubmitMatrixForm = (matrix) =>{
+        console.log(matrix)
+    }
+    
     return (
         <div className="container">
             <Navbar></Navbar>
@@ -35,14 +46,18 @@ const App = () => {
                 <Intro getUserOption={getUserOption}></Intro>:""
             }
             
-            <div className="graph-form">
-                {userOption === 1 ?
-                    <h1>Matrix</h1> :
-                    userOption === 2 ?
-                    <h1>List</h1> : ""
-                }
-            </div>
-            {userOption === 0 ? 
+        
+            {(userOption === 1 || userOption === 2)?
+                <MatrixForm 
+                    option={userOption} 
+                    handleCloseMatrixForm={handleCloseMatrixForm}
+                    handleChangeMatrixForm={handleChangeMatrixForm}
+                    handleSubmitMatrixForm={handleSubmitMatrixForm}
+                ></MatrixForm> : ""
+            }
+           
+            
+            {userOption !== '' ? 
                     <Canvas></Canvas>
                 : ""
             }

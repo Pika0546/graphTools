@@ -136,6 +136,7 @@ export const reducer = (state, action) => {
             ...state,
             tempEdge: [], openEdgeForm: false,
             vertexList: tempVertexList,
+            instructionMess:"Click any two vertices to draw an edge"
         }
     }
 

@@ -46,11 +46,17 @@ const Canvas = () => {
 
     }
 
+    const windowClickHandler = (event) => {
+        console.log(event)
+    }
     useEffect(() => {
         if(state.tempEdge.length > 0){
             dispatch({type: "CLEAR_TEMP"})
         }
-        
+        // window.addEventListener("click",windowClickHandler)
+        // return () => {
+        //     window.removeEventListener("click",windowClickHandler)
+        // }
     }, [action])
 
     const handleClickOnCanvas = (event)=>{
