@@ -28,12 +28,13 @@ const Navbar = () => {
                     <span> Graph Tools</span>
                 </div>
                 <ul className="navbar__list">
+                <li  className="navbar__list__item">
+                        Home
+                    </li>
                     <li  className="navbar__list__item">
                         Adjacency matrix
                     </li>
-                    <li  className="navbar__list__item">
-                        Adjacency list
-                    </li >
+                   
                     <li  className="navbar__list__item">
                         Contact us
                     </li>

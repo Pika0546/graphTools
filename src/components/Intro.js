@@ -17,7 +17,7 @@ const Intro = ({getUserOption}) => {
                     <br></br>
                     It supports some familiar algorithms such as find the Mimimum Spanning Tree(MST), the Shortest path, Euler Circuit...
                 </p>
-                
+                <p>Create a graph now !</p>
                 <div className="intro__content__buttons">
                     <button 
                         className="btn"
@@ -27,14 +27,7 @@ const Intro = ({getUserOption}) => {
                     >
                         Adjacency Matrix
                     </button>
-                    <button 
-                        className="btn"
-                        onClick={()=>{
-                            getUserOption(2)
-                        }}
-                    >
-                        Adjacency List
-                    </button>
+                  
                     <button 
                         className="btn"
                         onClick={()=>{

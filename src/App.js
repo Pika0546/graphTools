@@ -13,6 +13,7 @@ import './App.scss'
 
 const App = () => {
     const [userOption, setUserOption] = useState('');
+    const [matrix, setMatrix] = useState([])
     /*UserOption = 1 => Adjacency Matrix*/
     /*UserOption = 2 => Adjacency List*/
     /*UserOption = 0 => Draw*/
@@ -36,6 +37,7 @@ const App = () => {
 
     const handleSubmitMatrixForm = (matrix) =>{
         console.log(matrix)
+        setMatrix(matrix);
     }
     
     return (
@@ -47,18 +49,17 @@ const App = () => {
             }
             
         
-            {(userOption === 1 || userOption === 2)?
+            {(userOption === 1)?
                 <MatrixForm 
-                    option={userOption} 
+                    
                     handleCloseMatrixForm={handleCloseMatrixForm}
-                    handleChangeMatrixForm={handleChangeMatrixForm}
                     handleSubmitMatrixForm={handleSubmitMatrixForm}
                 ></MatrixForm> : ""
             }
            
             
             {userOption !== '' ? 
-                    <Canvas></Canvas>
+                    <Canvas matrix={matrix}></Canvas>
                 : ""
             }
         </div>  
