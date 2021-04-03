@@ -60,15 +60,22 @@ const EdgeForm = ({tempEdge, isDirected, addEdge, closeEdgeForm}) => {
     }
 
     return (
-        <div className="edge-form">
+        <div className="edge-form"
+            onClick={()=>{
+                closeEdgeForm()
+            }}
+        >
             <form 
                 className="edge-form__content"
                 onSubmit={handleSumit}
+                onClick={(e)=>{
+                    e.stopPropagation();
+                }}
             >
-                <h1 className="gradient-text">Create edge</h1>
+                <h1 >Create edge</h1>
                 <p>
                     <span> 
-                        <span className="gradient-text">
+                        <span>
                             Source :
                         </span>
                         <span className="vertex">
@@ -76,7 +83,7 @@ const EdgeForm = ({tempEdge, isDirected, addEdge, closeEdgeForm}) => {
                         </span>
                     </span> 
                     <span> 
-                        <span className="gradient-text">
+                        <span>
                             Des   : 
                         </span>
                         <span className="vertex">
@@ -86,7 +93,7 @@ const EdgeForm = ({tempEdge, isDirected, addEdge, closeEdgeForm}) => {
                 </p>
                 
                 <div className="edge-form__content__group row-1">
-                    <label className="gradient-text">Weight :</label>
+                    <label>Weight :</label>
                     <input 
                         className="edgeWeight" 
                         type="text" 
@@ -104,7 +111,7 @@ const EdgeForm = ({tempEdge, isDirected, addEdge, closeEdgeForm}) => {
                                                   }</p>
                 </div>
                 <div className="edge-form__content__group row-2">
-                    <label className="gradient-text row-2__name">Direction :</label>
+                    <label className="row-2__name">Direction :</label>
                     {isDirected === -1 || isDirected === 1 ?
                                 <div>
                                 <input 
@@ -116,7 +123,7 @@ const EdgeForm = ({tempEdge, isDirected, addEdge, closeEdgeForm}) => {
                                     checked={state.dir === 1}
                                 ></input>
                                 <label htmlFor="yes-dir" className={state.dir === 1 ? "on-selected" : ""}>
-                                    <span className="gradient-text">Yes</span>
+                                    <span >Yes</span>
                                 </label>
                             </div>
                             : ""
@@ -132,7 +139,7 @@ const EdgeForm = ({tempEdge, isDirected, addEdge, closeEdgeForm}) => {
                                 checked={state.dir === 0}
                             ></input>
                             <label  className={state.dir === 0 ? "on-selected" : ""} htmlFor="no-dir" >
-                                <span className="gradient-text">No</span>
+                                <span>No</span>
                             </label>
                         </div>
                         : ""
@@ -140,12 +147,12 @@ const EdgeForm = ({tempEdge, isDirected, addEdge, closeEdgeForm}) => {
                 </div>
                 <div className="edge-form__content__group row-3">
                     <button type="submit">
-                        <span className="gradient-text" >OK</span>
+                        <span>OK</span>
                     </button>
                     <button type="button" onClick={()=>{
                         closeEdgeForm()
                     }}>
-                        <span className="gradient-text">Cancel</span>
+                        <span >Cancel</span>
                     </button>
                 </div>
             </form>

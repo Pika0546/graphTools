@@ -27,16 +27,8 @@ const App = () => {
         setUserOption(0);
     }
 
-    const handleChangeMatrixForm = () =>{
-        if(userOption === 1){
-            setUserOption(2)
-        }else{
-            setUserOption(1);
-        }
-    }
-
     const handleSubmitMatrixForm = (matrix) =>{
-        console.log(matrix)
+        setUserOption(0);
         setMatrix(matrix);
     }
     
@@ -51,14 +43,13 @@ const App = () => {
         
             {(userOption === 1)?
                 <MatrixForm 
-                    
                     handleCloseMatrixForm={handleCloseMatrixForm}
                     handleSubmitMatrixForm={handleSubmitMatrixForm}
                 ></MatrixForm> : ""
             }
            
             
-            {userOption !== '' ? 
+            {userOption === 0 ? 
                     <Canvas matrix={matrix}></Canvas>
                 : ""
             }

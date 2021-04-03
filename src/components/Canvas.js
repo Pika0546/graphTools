@@ -16,10 +16,17 @@ const defaultState = {
     instructionMess: "",
 }
 
-const Canvas = () => {
+/* Vertex: {x, y, value, status} 
+    edge: {vertex1, vertex2, length, angle, id, weight, dir, startX, startY}
+*/
+
+const Canvas = ({matrix}) => {
 
     const [action, setAction] = useState("default");
     const [state, dispatch] = useReducer(reducer, defaultState)
+
+
+    
 
     const handleToolsAction = (ac) =>{
         if(ac === 'removing-all'){
@@ -46,17 +53,14 @@ const Canvas = () => {
 
     }
 
-    const windowClickHandler = (event) => {
-        console.log(event)
-    }
+  
     useEffect(() => {
         if(state.tempEdge.length > 0){
             dispatch({type: "CLEAR_TEMP"})
         }
-        // window.addEventListener("click",windowClickHandler)
-        // return () => {
-        //     window.removeEventListener("click",windowClickHandler)
-        // }
+        if(matrix && matrix.length !== 0){
+            dispatch({type: "DRAW_FULL_GRAPH", payload:matrix})
+        }
     }, [action])
 
     const handleClickOnCanvas = (event)=>{

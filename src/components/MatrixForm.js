@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
 const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
 
@@ -26,17 +26,21 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
     const handleSubmitForm = () => {
         if(myState.matrix.length !== 0){
             let tempMatrix = myState.matrix.split('\n');
+            tempMatrix = tempMatrix.filter((item)=>{
+                 return item.length !== 0;
+            })
             let n = tempMatrix.length;
             let notSquareMatrix = false;
             let invalidVal = false;
             let ring = false;
+            
             for(let i = 0 ; i < n ; i++){
                 tempMatrix[i] = tempMatrix[i].split(" ");
                 tempMatrix[i] = tempMatrix[i].filter((item)=>{
                     return item !== "";
                 })
             }
-            
+            console.log(tempMatrix)
             for(let i = 0 ; i < n; i ++){
                 let m = tempMatrix[i].length;
                 for(let j = 0 ; j < m ;j++){
@@ -45,7 +49,7 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
                     }
                    
                 }
-                if(tempMatrix[i][i] != '0'){
+                if(tempMatrix[i][i] !== '0'){
                     ring = true;
                 }
             }
@@ -66,7 +70,7 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
             }else{
                 for(let i = 0; i < n ; i++){
                     for(let j = 0 ; j < n ; j ++){
-                        if(tempMatrix[i][j] != "Inf"){
+                        if(tempMatrix[i][j] !== "Inf"){
                             tempMatrix[i][j] = Number(tempMatrix[i][j])
                         }
                     }
@@ -75,10 +79,9 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
                     ...myState,
                     matrix: tempMatrix,
                     invalidValue: false,
-                    invalidMatrix: false
+                    invalidMatrix: false,
                 })
                 handleSubmitMatrixForm(tempMatrix)
-                handleCloseMatrixForm();
                 
             }    
         }else{
@@ -90,8 +93,16 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
     
 
     return (
-        <div className="matrix-form">
-            <div className="matrix-form__content">
+        <div 
+            className="matrix-form" 
+            onClick={handleCloseForm}
+        >
+            <div 
+                className="matrix-form__content"
+                onClick={(e)=>{
+                    e.stopPropagation();
+                }}
+            >
                 <div className="matrix-form__header">
                     <h3>Create Graph</h3>
                 </div>

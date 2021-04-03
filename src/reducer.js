@@ -85,6 +85,45 @@ export const reducer = (state, action) => {
         return true;
     }
 
+
+	const solveMyMathProblem = (xa, ya, xo, yo, alpha) => {
+        console.log(alpha*180/Math.PI)
+		let y = (ya - yo)*Math.cos(alpha) + yo;
+		let x1 = Math.sqrt((ya - yo) * (ya - yo) - (y - yo)*(y - yo)) + xo;
+		let x2 = -Math.sqrt((ya - yo) * (ya - yo) - (y - yo)*(y - yo)) + xo;
+		return [x1, y, x2, y];
+	}
+
+    if(action.type === 'DRAW_FULL_GRAPH'){
+        console.log(action.payload);
+        let tempMatrix = action.payload;
+        const startVertexX0 = 400;
+        const startVertexY0 = 50;
+        const denta = 20;
+        const size = tempMatrix.length;
+        const centerX = startVertexX0;
+        const centerY = startVertexY0 + denta*size;
+        
+        let tempVertexList = [];
+        tempVertexList.push({x:startVertexX0, y: startVertexY0, value: 1, status: ""});
+        for(let i = 2 ;i <= size/2 + 1 ; i ++){
+            let [x1, y1, x2, y2] = solveMyMathProblem(startVertexX0, startVertexY0, centerX, centerY, 2 * Math.PI* (i - 1) / size);
+            if(i == size + 2 - i){
+                tempVertexList.push({x: x1, y: y1, value: i, status: ""});
+            }
+            else{
+                tempVertexList.push({x: x1, y: y1, value: i, status: ""});
+                tempVertexList.push({x: x2, y: y2, value: size + 2 - i, status: ""});
+            }
+        }
+
+        return {
+            ...state,
+            matrix: tempMatrix,
+            vertexList: tempVertexList
+        }
+    }
+
     if(action.type === 'START_ADD_VERTEX'){
         return{
             ...state,
