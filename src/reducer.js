@@ -32,15 +32,15 @@ export const reducer = (state, action) => {
         return [length, -calc];
     }
 
-    const isInEdgeList = (vertex1, vertex2, dir) =>{
-        let n = state.edgeList.length;
+    const isInEdgeList = (vertex1, vertex2, dir, edgeList) =>{
+        let n = edgeList.length;
         for(let i = 0 ; i< n ; i++){
             
             if(dir === 0){
-                if(state.edgeList[i].id
+                if(edgeList[i].id
                     === vertex1.value.toString() + vertex2.value.toString() 
                 ||
-                state.edgeList[i].id
+                edgeList[i].id
                     === vertex2.value.toString() + vertex1.value.toString() 
              
                 ){
@@ -48,7 +48,7 @@ export const reducer = (state, action) => {
                 }
             }
 
-            if(state.edgeList[i].id
+            if(edgeList[i].id
                 === vertex1.value.toString() + vertex2.value.toString() 
             ){
                 return i;
@@ -57,9 +57,9 @@ export const reducer = (state, action) => {
         return -1;
     }
 
-    const findVertex = (vertex) => {
-        let index = state.vertexList.findIndex((item) => {
-            return item.value === vertex.value;
+    const findVertex = (value, vertexList = state.vertexList) => {
+        let index = vertexList.findIndex((item) => {
+            return item.value === value;
         })
         return index;
     }
@@ -94,21 +94,66 @@ export const reducer = (state, action) => {
 		return [x1, y, x2, y];
 	}
 
+    const addEdge = (vertex1, vertex2, edgeList, dir, weight) => {
+        
+        let id = vertex1.value.toString() + vertex2.value.toString();
+        let [length, angle] = calculateEdgeProp(vertex1, vertex2);
+        let startX = vertex1.x;
+        let startY = vertex1.y;
+        if(vertex1.x > vertex2.x){
+            startX = vertex2.x;
+            startY = vertex2.y;
+        }
+        if(dir !== 0){
+            let otherEdgeIndex = isInEdgeList(vertex2, vertex1, dir, edgeList);
+                if(otherEdgeIndex !== -1){
+                    const R = 15;
+                    let dentaX = 0;
+                    let dentaY = 0;
+                    if(angle < 0){
+                        dentaX = R*Math.cos(rad(90+angle));
+                        dentaY = R*Math.sin(rad(90+angle));
+                        edgeList[otherEdgeIndex].startX = startX + dentaX;
+                        edgeList[otherEdgeIndex].startY = startY + dentaY;
+                        startX = startX - dentaX;
+                        startY = startY - dentaY;
+                    }
+                    else{
+                        dentaY = R*Math.cos(rad(angle));
+                        dentaX = R*Math.sin(rad(angle));
+                        edgeList[otherEdgeIndex].startX = startX - dentaX;
+                        edgeList[otherEdgeIndex].startY = startY + dentaY;
+                        startX = startX + dentaX;
+                        startY = startY - dentaY;
+                    }
+                }
+        }
+        edgeList.push({ vertex1, 
+            vertex2, 
+            length, 
+            angle, 
+            id, 
+            weight, 
+            dir,
+            startX,
+            startY})
+    }
+
     if(action.type === 'DRAW_FULL_GRAPH'){
         console.log(action.payload);
         let tempMatrix = action.payload;
-        const startVertexX0 = 400;
-        const startVertexY0 = 50;
-        const denta = 20;
+        const denta =25;
         const size = tempMatrix.length;
+        const startVertexX0 = denta*size + 30;
+        const startVertexY0 = 50;
         const centerX = startVertexX0;
         const centerY = startVertexY0 + denta*size;
-        
+        let tempEdgeList = [];
         let tempVertexList = [];
         tempVertexList.push({x:startVertexX0, y: startVertexY0, value: 1, status: ""});
         for(let i = 2 ;i <= size/2 + 1 ; i ++){
             let [x1, y1, x2, y2] = solveMyMathProblem(startVertexX0, startVertexY0, centerX, centerY, 2 * Math.PI* (i - 1) / size);
-            if(i == size + 2 - i){
+            if(i === size + 2 - i){
                 tempVertexList.push({x: x1, y: y1, value: i, status: ""});
             }
             else{
@@ -117,10 +162,45 @@ export const reducer = (state, action) => {
             }
         }
 
+        let isDir = 0;
+        let isWeight = 0;
+
+        for(let i = 0 ; i < size ; i++){
+            for(let j = 0 ; j < size; j++){
+               if(!isWeight){
+                    if(tempMatrix[i][j] !== 0 && tempMatrix[i][j] !== 1){
+                        isWeight = 1;
+                    }
+               }
+               if(!isDir){
+                   if(tempMatrix[i][j] !== tempMatrix[j][i]){
+                       isDir = 1;
+                   }
+               }
+               if(isDir && isWeight){
+                   break;
+               }
+            }
+        }
+        console.log(tempVertexList)
+        for(let i = 0 ;i < size; i ++){
+            for(let j = 0 ; j < size; j++){
+                if((isWeight && tempMatrix[i][j] !== 'Inf') || (!isWeight && tempMatrix[i][j] !== 0)){
+                    console.log(i, j)
+                    let index1 = findVertex(i + 1, tempVertexList);
+                    let index2 = findVertex(j + 1, tempVertexList);
+                    console.log(index1, index2)
+                    addEdge(tempVertexList[index1],tempVertexList[index2],tempEdgeList,  isDir, isWeight ? tempMatrix[i][j] : 0);
+                }
+            }
+        }
+
         return {
             ...state,
             matrix: tempMatrix,
-            vertexList: tempVertexList
+            vertexList: tempVertexList,
+            edgeList: tempEdgeList,
+            isDirected: isDir
         }
     }
 
@@ -156,7 +236,7 @@ export const reducer = (state, action) => {
     if(action.type === "CLEAR_TEMP"){
         let currentVertex = state.tempEdge[0];
         let tempVertexList = state.vertexList.slice(0);
-        tempVertexList[findVertex(currentVertex)].status="";
+        tempVertexList[findVertex(currentVertex.value, state.vertexList)].status="";
         return{
             ...state,
             vertexList: tempVertexList,
@@ -169,8 +249,8 @@ export const reducer = (state, action) => {
     if(action.type === 'CLOSE_EDGE_FORM'){
         let tempTempEdge = state.tempEdge.slice(0);
         let tempVertexList = state.vertexList.slice(0);
-        tempVertexList[findVertex(tempTempEdge[0])].status="";
-        tempVertexList[findVertex(tempTempEdge[1])].status="";
+        tempVertexList[findVertex(tempTempEdge[0].value , state.vertexList)].status="";
+        tempVertexList[findVertex(tempTempEdge[1].value , state.vertexList)].status="";
         return{
             ...state,
             tempEdge: [], openEdgeForm: false,
@@ -219,7 +299,7 @@ export const reducer = (state, action) => {
         let temp = state.tempEdge.slice(0);
         let tempList = state.vertexList.slice(0);
         temp.push({x: vertex.x, y: vertex.y, value: vertex.value})
-        tempList[findVertex(vertex)].status="is-selecting";
+        tempList[findVertex(vertex.value)].status="is-selecting";
         return {
             ...state,
             vertexList: tempList,
@@ -232,8 +312,8 @@ export const reducer = (state, action) => {
         let tempVertexList = state.vertexList.slice(0)
         let vertex1 = action.payload;
         let vertex2 = state.tempEdge[0];
-        tempVertexList[findVertex(vertex1)].status = "";
-        tempVertexList[findVertex(vertex2)].status = "";
+        tempVertexList[findVertex(vertex1.value)].status = "";
+        tempVertexList[findVertex(vertex2.value)].status = "";
         return {
         
             ...state,
@@ -248,8 +328,8 @@ export const reducer = (state, action) => {
         let tempTempEdge = state.tempEdge.slice(0);
         let tempVertexList = state.vertexList.slice(0);
         tempTempEdge.push(vertex);
-        tempVertexList[findVertex(vertex)].status = "is-selecting";
-        tempVertexList[findVertex(tempTempEdge[0])].status = "is-selecting";
+        tempVertexList[findVertex(vertex.value)].status = "is-selecting";
+        tempVertexList[findVertex(tempTempEdge[0].value)].status = "is-selecting";
 
         return{
             ...state,
@@ -259,22 +339,24 @@ export const reducer = (state, action) => {
         }
     }
 
+    
+
     if (action.type === 'ADD_EDGE') {
         let {weight, dir} = action.payload;
         let vertex1 = state.tempEdge[0];
         let vertex2 = state.tempEdge[1];
         let tempEdgeList = state.edgeList.slice(0);
         let tempVertexList = state.vertexList.slice(0);
-        tempVertexList[findVertex(vertex1)].status="";
-        tempVertexList[findVertex(vertex2)].status="";
+        tempVertexList[findVertex(vertex1.value)].status="";
+        tempVertexList[findVertex(vertex2.value)].status="";
 
         let id = vertex1.value.toString() + vertex2.value.toString();
-        let index = isInEdgeList(vertex1, vertex2, dir);
+        let index = isInEdgeList(vertex1, vertex2, dir, state.edgeList);
         if(index === -1){
             //Thêm mới
             let [length, angle] = calculateEdgeProp(vertex1, vertex2);
             let tempMatrix = state.matrix.slice(0);
-            tempMatrix[findVertex(vertex1)][findVertex(vertex2)] = weight;
+            tempMatrix[findVertex(vertex1.value)][findVertex(vertex2.value)] = weight;
             
             let startX = vertex1.x;
             let startY = vertex1.y;
@@ -284,10 +366,10 @@ export const reducer = (state, action) => {
             }
             
             if(dir === 0){
-                tempMatrix[findVertex(vertex2)][findVertex(vertex1)] = weight;
+                tempMatrix[findVertex(vertex2.value)][findVertex(vertex1.value)] = weight;
             }
             else{
-                let otherEdgeIndex = isInEdgeList(vertex2, vertex1, dir);
+                let otherEdgeIndex = isInEdgeList(vertex2, vertex1, dir, state.edgeList);
                 if(otherEdgeIndex !== -1){
                     const R = 15;
                     let dentaX = 0;
