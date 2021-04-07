@@ -1,12 +1,12 @@
 import React from 'react'
-import {useState, useReducer} from 'react'
+import {useState, useEffect} from 'react'
 
 /* ======== Component ========*/ 
 import Intro from './components/Intro';
 import Navbar from './components/Navbar';
 import Canvas from './components/Canvas';
 import MatrixForm from './components/MatrixForm';
-
+import Contact from './components/Contact';
 /* ======== SCSS =========*/ 
 import './App.scss'
 
@@ -15,7 +15,6 @@ const App = () => {
     const [userOption, setUserOption] = useState('');
     const [matrix, setMatrix] = useState([])
     /*UserOption = 1 => Adjacency Matrix*/
-    /*UserOption = 2 => Adjacency List*/
     /*UserOption = 0 => Draw*/
 
 
@@ -31,10 +30,16 @@ const App = () => {
         setUserOption(0);
         setMatrix(matrix);
     }
+
+    useEffect(() => {
+        if(userOption === ''){
+            setMatrix([]);
+        }
+    }, [userOption])
     
     return (
         <div className="container">
-            <Navbar></Navbar>
+            <Navbar getUserOption={getUserOption}></Navbar>
             {/* <ResponMenu></ResponMenu> */}
             {userOption==='' ? 
                 <Intro getUserOption={getUserOption}></Intro>:""
@@ -53,6 +58,11 @@ const App = () => {
                     <Canvas matrix={matrix}></Canvas>
                 : ""
             }
+
+            {userOption === 2 ?
+                    <Contact></Contact> : ""
+            }
+            
         </div>  
     )
 }

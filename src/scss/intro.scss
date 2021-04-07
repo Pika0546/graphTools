@@ -6,10 +6,16 @@
     @include respond(exml){
         padding: 30px 0;
     }
+    &__paragraph{
 
+        animation: introParaAni .6s linear 1 ;
+    }
     &__content{
         @include respond(exml){
             padding: 0 20px;
+        }
+        h1{
+            animation: introHelloAni .3s linear 1;
         }
         .welcome{
             display: flex;
@@ -17,11 +23,14 @@
             align-items: center;
             p{
                 margin-right: 15px;
+                animation: introWelcomePAni .3s linear 1;
             }
             .brand{
                 img{
                     margin-right: 2px;
                 }
+                animation: introWelcomeBrandAni .3s linear 1;
+                
             }
         }
        
@@ -36,7 +45,12 @@
                 @include respond(exml){
                     padding: 10px;
                 }
-    
+                &:first-child{
+                    animation: introButtonLeft .3s linear 1;
+                }
+                &:last-child{
+                    animation: introButtonRight .3s linear 1;
+                }
             }
             @include respond(exml){
                 margin-top: 10px;
@@ -44,5 +58,71 @@
                 grid-template-columns: auto;
             }
         }
+    }
+}
+
+@keyframes introHelloAni{
+    from{
+        transform: translate(0 ,-100px);
+        opacity: 0;
+    }
+    to{
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes introWelcomePAni{
+    from{
+        transform: translate(-100px ,0);
+        opacity: 0;
+    }
+    to{
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+@keyframes introWelcomeBrandAni{
+    from{
+        transform: translate(100px ,0);
+        opacity: 0;
+    }
+    to{
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes introParaAni{
+    from{
+        
+        opacity: 0;
+    }
+    to{
+      
+        opacity: 1;
+    }
+}
+
+@keyframes introButtonLeft{
+    from{
+        opacity: 0;
+        transform: translate(-100px, 100px);
+    }
+    to{
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+
+@keyframes introButtonRight{
+    from{
+        opacity: 0;
+        transform: translate(100px, 100px);
+    }
+    to{
+        opacity: 1;
+        transform: translate(0, 0);
     }
 }

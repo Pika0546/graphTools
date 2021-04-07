@@ -35,19 +35,23 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
             let ring = false;
             
             for(let i = 0 ; i < n ; i++){
+                tempMatrix[i] = tempMatrix[i].replaceAll(/,/g,'');
                 tempMatrix[i] = tempMatrix[i].split(" ");
                 tempMatrix[i] = tempMatrix[i].filter((item)=>{
                     return item !== "";
                 })
+                let m = tempMatrix[i].length;
+                for(let j = 0 ; j < m ; j++){
+                    tempMatrix[i][j] = tempMatrix[i][j].toLowerCase();
+                }
             }
             console.log(tempMatrix)
             for(let i = 0 ; i < n; i ++){
                 let m = tempMatrix[i].length;
                 for(let j = 0 ; j < m ;j++){
-                    if(tempMatrix[i][j] !== "Inf" && isNaN(tempMatrix[i][j])){
+                    if(tempMatrix[i][j] !== "inf"  && isNaN(tempMatrix[i][j])){
                         invalidVal = true;
                     }
-                   
                 }
                 if(tempMatrix[i][i] !== '0'){
                     ring = true;
@@ -70,7 +74,7 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
             }else{
                 for(let i = 0; i < n ; i++){
                     for(let j = 0 ; j < n ; j ++){
-                        if(tempMatrix[i][j] !== "Inf"){
+                        if(tempMatrix[i][j] !== "inf"){
                             tempMatrix[i][j] = Number(tempMatrix[i][j])
                         }
                     }

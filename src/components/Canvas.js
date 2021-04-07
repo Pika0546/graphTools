@@ -25,9 +25,6 @@ const Canvas = ({matrix}) => {
     const [action, setAction] = useState("default");
     const [state, dispatch] = useReducer(reducer, defaultState)
 
-
-    
-
     const handleToolsAction = (ac) =>{
         if(ac === 'removing-all'){
             console.log("remove all")
@@ -58,10 +55,14 @@ const Canvas = ({matrix}) => {
         if(state.tempEdge.length > 0){
             dispatch({type: "CLEAR_TEMP"})
         }
+   
+    }, [action])
+
+    useEffect(()=>{
         if(matrix && matrix.length !== 0){
             dispatch({type: "DRAW_FULL_GRAPH", payload:matrix})
         }
-    }, [action])
+    },[matrix])
 
     const handleClickOnCanvas = (event)=>{
         if(action === 'adding-vertex'){
@@ -75,7 +76,7 @@ const Canvas = ({matrix}) => {
     const handleClickOnVertex = (vertex) =>{
         if(action === 'adding-edge'){
             let temp = state.tempEdge.slice(0);
-         
+            
             if(temp.length  < 1){
                
                 dispatch({type: "ADD_1_VERTEX_TO_EDGE", payload: vertex})
@@ -88,8 +89,8 @@ const Canvas = ({matrix}) => {
                 }else{
                     dispatch({type: 'OPEN_EDGE_FORM' , payload: vertex})
                 }
-                // dispatch({type: 'ADD_EDGE', payload: {vertex1: temp[0], vertex2: vertex, dir: 0, value: 0}})
             }
+                // dispatch({type: 'ADD_EDGE', payload: {vertex1: temp[0], vertex2: vertex, dir: 0, value: 0}})
         }else if(action === 'removing'){
             dispatch({type: "REMOVE_VERTEX", payload: vertex})
         }

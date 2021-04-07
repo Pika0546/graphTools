@@ -87,7 +87,6 @@ export const reducer = (state, action) => {
 
 
 	const solveMyMathProblem = (xa, ya, xo, yo, alpha) => {
-        console.log(alpha*180/Math.PI)
 		let y = (ya - yo)*Math.cos(alpha) + yo;
 		let x1 = Math.sqrt((ya - yo) * (ya - yo) - (y - yo)*(y - yo)) + xo;
 		let x2 = -Math.sqrt((ya - yo) * (ya - yo) - (y - yo)*(y - yo)) + xo;
@@ -140,7 +139,7 @@ export const reducer = (state, action) => {
     }
 
     if(action.type === 'DRAW_FULL_GRAPH'){
-        console.log(action.payload);
+
         let tempMatrix = action.payload;
         const denta =25;
         const size = tempMatrix.length;
@@ -182,15 +181,28 @@ export const reducer = (state, action) => {
                }
             }
         }
-        console.log(tempVertexList)
+
         for(let i = 0 ;i < size; i ++){
             for(let j = 0 ; j < size; j++){
-                if((isWeight && tempMatrix[i][j] !== 'Inf') || (!isWeight && tempMatrix[i][j] !== 0)){
-                    console.log(i, j)
+                if((isWeight && tempMatrix[i][j] !== 'inf') || (!isWeight && tempMatrix[i][j] !== 0)){
+                  
                     let index1 = findVertex(i + 1, tempVertexList);
                     let index2 = findVertex(j + 1, tempVertexList);
-                    console.log(index1, index2)
+                   
                     addEdge(tempVertexList[index1],tempVertexList[index2],tempEdgeList,  isDir, isWeight ? tempMatrix[i][j] : 0);
+                }
+            }
+        }
+
+        if(!isWeight){
+            for(let i = 0 ; i < 0 ; i++){
+                for(let j = 0 ; j < 0; j ++){
+                    if(tempMatrix[i][j] === 0){
+                        tempMatrix[i][j] = 'inf';
+                    }
+                    else if(tempMatrix[i][j] === 1){
+                        tempMatrix[i][j] = 0;
+                    }
                 }
             }
         }
@@ -205,12 +217,14 @@ export const reducer = (state, action) => {
     }
 
     if(action.type === 'START_ADD_VERTEX'){
+     
         return{
             ...state,
             instructionMess:"Click everywhere on the canvas to draw a vertex"
         }
     }
     if(action.type === 'START_ADD_EDGE'){
+        console.log("asd")
         return{
             ...state,
             instructionMess:"Click any two vertices to draw an edge"
@@ -356,6 +370,7 @@ export const reducer = (state, action) => {
             //Thêm mới
             let [length, angle] = calculateEdgeProp(vertex1, vertex2);
             let tempMatrix = state.matrix.slice(0);
+            console.log(weight)
             tempMatrix[findVertex(vertex1.value)][findVertex(vertex2.value)] = weight;
             
             let startX = vertex1.x;
@@ -441,6 +456,9 @@ export const reducer = (state, action) => {
         tempEdgeList = tempEdgeList.filter((item)=>{
             return item.vertex1.value !== vertex.value && item.vertex2.value !== vertex.value;
         })
+        if(tempVertexList.length === 0){
+            tempMatrix = [];
+        }
 		return {
             ...state, 
             vertexList: tempVertexList,
@@ -476,7 +494,7 @@ export const reducer = (state, action) => {
 	}
 
     if(action.type === 'REMOVE_ALL'){
-        console.log("REMOVE ALL")
+
         return { 
             ...state, 
             matrix: [],

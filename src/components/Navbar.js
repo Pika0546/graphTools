@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import homeIcon from '../img/homeIcon1.png'
 
 
-const Navbar = () => {
+const Navbar = ({getUserOption}) => {
 
     const [openMenu, setOpenMenu] = useState(false);
 
@@ -23,19 +23,36 @@ const Navbar = () => {
     return (
         <>
             <section className="navbar">
-                <div className="brand">
+                <div className="brand"
+                     onClick={()=>{
+                        getUserOption('')
+                    }}
+                >
                     <img className="logo" src={homeIcon} alt="icon"></img>
                     <span> Graph Tools</span>
                 </div>
                 <ul className="navbar__list">
-                <li  className="navbar__list__item">
+                <li  className="navbar__list__item"
+                    onClick={()=>{
+                        getUserOption('')
+                    }}
+                >
                         Home
                     </li>
-                    <li  className="navbar__list__item">
+                    <li  className="navbar__list__item"
+                        onClick={()=>{
+                            getUserOption(1)
+                        }}
+                    >
                         Adjacency matrix
                     </li>
                    
-                    <li  className="navbar__list__item">
+                    <li  
+                        className="navbar__list__item"
+                        onClick={()=>{
+                            getUserOption(2)
+                        }}
+                    >
                         Contact us
                     </li>
                 </ul>

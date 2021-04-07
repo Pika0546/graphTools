@@ -12,12 +12,12 @@ const Intro = ({getUserOption}) => {
                         <span> Graph Tools</span>
                     </span>
                 </div>
-                <p>
+                <p className="intro__paragraph">
                     This website provides a number of tools for working with Graph Structure.
                     <br></br>
                     It supports some familiar algorithms such as find the Mimimum Spanning Tree(MST), the Shortest path, Euler Circuit...
                 </p>
-                <p>Create a graph now !</p>
+                <p  className="intro__paragraph">Create a graph now !</p>
                 <div className="intro__content__buttons">
                     <button 
                         className="btn"
