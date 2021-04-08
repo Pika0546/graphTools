@@ -6,12 +6,12 @@ const ResponMenu = () => {
             <div className="menu__content">
                 <div className="menu__content__item">
                     <span>
-                        Adjacency matrix
+                       Home
                     </span>
                 </div>
                 <div className="menu__content__item">
                     <span>
-                        Adjacency list
+                        Adjacency Matrix
                     </span>
                 </div>
                 <div className="menu__content__item">

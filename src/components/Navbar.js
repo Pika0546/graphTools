@@ -66,18 +66,36 @@ const Navbar = ({getUserOption}) => {
                 </div>
             </section>
             <div className={"menu " + (openMenu ? "is-open" : "") }>
-                    <ul className="menu__content">
-                        <li className="menu__content__item">
-                        <span> Adjacency matrix</span>
-                        </li>
-                        <li  className="menu__content__item">
-                            <span>Adjacency list</span>
-                        </li >
-                        <li  className="menu__content__item">
+                <ul className="menu__content">
+                    <li 
+                        className="menu__content__item"
+                        onClick={()=>{
+                            getUserOption('');
+                            setOpenMenu(false);
+                        }}
+                    >
+                        <span> Home </span>
+                    </li>
+                    <li  
+                        className="menu__content__item"
+                        onClick={()=>{
+                            getUserOption(1);
+                            setOpenMenu(false);
+                        }}
+                    >
+                        <span>Adjacency Matrix</span>
+                    </li >
+                    <li  
+                        className="menu__content__item"
+                        onClick={()=>{
+                            getUserOption(2);
+                            setOpenMenu(false);
+                        }}
+                    >
                         <span> Contact us</span>
-                        </li>
-                    </ul>
-                </div>
+                    </li>
+                </ul>
+            </div>
         </>
     )
 }

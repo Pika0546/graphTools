@@ -1,12 +1,13 @@
 import React from 'react'
-
+import Footer from './Footer';
 const Contact = () => {
     return (
-        <div className="contact">
-            <div className="contact__header">
-                <h1>Contact Us</h1>
-            </div>
-         
+        <>
+            <div className="contact">
+                <div className="contact__header">
+                    <h1>Contact Us</h1>
+                </div>
+            
                 <form className="contact__form">
                     <div className="contact__form__group">
                         <label>Name: </label>
@@ -25,11 +26,13 @@ const Contact = () => {
                         <textarea cols="40" rows="5"  autoComplete="off"></textarea>
                     </div>
                     <div className="contact__form__group">
-                       <button type="reset">Reset</button>
-                       <button type="submit">Send</button>
+                    <button type="reset">Reset</button>
+                    <button type="submit">Send</button>
                     </div>
                 </form>
-        </div>
+            </div>
+            <Footer></Footer>
+        </>
     )
 }
 
