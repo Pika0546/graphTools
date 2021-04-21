@@ -45,7 +45,6 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
                     tempMatrix[i][j] = tempMatrix[i][j].toLowerCase();
                 }
             }
-            console.log(tempMatrix)
             for(let i = 0 ; i < n; i ++){
                 let m = tempMatrix[i].length;
                 for(let j = 0 ; j < m ;j++){

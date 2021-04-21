@@ -25,7 +25,7 @@ const Navbar = ({getUserOption}) => {
             <section className="navbar">
                 <div className="brand"
                      onClick={()=>{
-                        getUserOption('')
+                        window.location.reload();
                     }}
                 >
                     <img className="logo" src={homeIcon} alt="icon"></img>

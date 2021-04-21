@@ -15,7 +15,7 @@ const Intro = ({getUserOption}) => {
                 <p className="intro__paragraph">
                     This website provides a number of tools for working with Graph Structure.
                     <br></br>
-                    It supports some familiar algorithms such as find the Mimimum Spanning Tree(MST), the Shortest path, Euler Circuit...
+                    It supports some common algorithms such as find the Mimimum Spanning Tree(MST), the Shortest Path, Euler Circuit...
                 </p>
                 <p  className="intro__paragraph">Create a graph now !</p>
                 <div className="intro__content__buttons">
@@ -38,7 +38,6 @@ const Intro = ({getUserOption}) => {
                     </button>
                 </div>
             </div>
-          
         </section>
     )
 }

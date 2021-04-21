@@ -54,7 +54,7 @@ const App = () => {
             }
            
             
-            {userOption === 0 ? 
+            {userOption === 0 || userOption === 1  ? 
                     <Canvas matrix={matrix}></Canvas>
                 : ""
             }

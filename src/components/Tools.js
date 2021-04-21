@@ -87,7 +87,31 @@ const Tools = ({handleToolsAction, action}) => {
                     <div 
                         className="tools__btn"
                         onClick={()=>{
-                            handleToolsAction('calculating')
+                            handleToolsAction('start-DFS')
+                        }}
+                    >
+                        <span>DFS</span>
+                    </div>
+                    <div 
+                        className="tools__btn"
+                        onClick={()=>{
+                            handleToolsAction('start-BFS')
+                        }}
+                    >
+                        <span>BFS</span>
+                    </div>
+                    <div 
+                        className="tools__btn"
+                        onClick={()=>{
+                            handleToolsAction('count-CC')
+                        }}
+                    >
+                        <span>Count Connected Component</span>
+                    </div>
+                    <div 
+                        className="tools__btn"
+                        onClick={()=>{
+                            handleToolsAction('start-SP')
                         }}
                     >
                         <span>Shortest Path</span>
@@ -95,11 +119,12 @@ const Tools = ({handleToolsAction, action}) => {
                     <div 
                         className="tools__btn"
                         onClick={()=>{
-                            handleToolsAction('calculating')
+                            handleToolsAction('start-MST')
                         }}
                     >
                        <span> Minimum Spanning Tree</span>
                     </div>
+                    
                 </div>
             </div>
         </div>

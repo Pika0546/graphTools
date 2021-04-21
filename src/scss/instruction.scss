@@ -3,8 +3,46 @@
     background-color: $glass-bg ;
     margin-top: 10px;
     &__content{
-        @include centerContent;
-        height: 40px;
+        // @include verticalCenter;
+        // line-height: 40px;
+        padding: 3px;
+        padding-left: 10px;
+        min-height: 40px;
+        max-height: 140px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        /* width */
+        &::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        /* Track */
+        &::-webkit-scrollbar-track {
+            background-color: $glass-bg;
+
+        }
+
+        /* Handle */
+        &::-webkit-scrollbar-thumb {
+            background: #cc2b5e;  /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #753a88, #cc2b5e);  /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #753a88, #cc2b5e); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        }
+
+        /* Handle on hover */
+        &::-webkit-scrollbar-thumb:hover {
+            background: rgb(255, 0, 106); 
+        }
+        .result-algo{
+            display: block;
+            width: 100%;
+            text-align: left;
+            span{
+                font-size: 14px;
+                line-height: 20px;
+            }
+        }
     }
   
 }

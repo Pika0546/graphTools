@@ -78,10 +78,6 @@
                 border-radius: 50%;
                 cursor: pointer;
                 transition: .2s;
-                &:hover{
-                    background-color: rgb(226, 226, 226);
-
-                }
             }
             label.row-2__name{
                 padding: 5px 0;
@@ -89,6 +85,11 @@
             label.on-selected{
 
                 background-color: rgb(226, 226, 226);
+            }
+            div{
+                label:hover{
+                    background-color: rgb(226, 226, 226);
+                }
             }
         }
         .row-3{

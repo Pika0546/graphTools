@@ -55,6 +55,19 @@
     cursor: pointer;
 }
 
+.canvas.is-start-SP .vertex{
+     cursor: pointer;
+}
+
+.canvas.is-start-DFS .vertex{
+    cursor: pointer;
+}
+
+.canvas.is-start-BFS .vertex{
+    cursor: pointer;
+}
+
+
 .canvas.is-choosing{
     cursor: pointer;
 }
@@ -95,6 +108,14 @@
     background-color: orchid;
 }
 
+.vertex.is-in-SP{
+    background-color: $edge-other;
+}
+
+.vertex.is-in-DFS{
+    background-color: $edge-other;
+}
+
 /* ========== EDGE ==============*/
 
 .edge{
@@ -116,5 +137,26 @@
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+    }
+}
+
+.edge.is-in-SP{
+    background-color:$edge-other;
+    i{
+        color: $edge-other;
+    }
+    span{
+        color: $edge-other;
+    }
+
+}
+
+.edge.is-in-DFS{
+    background-color:$edge-other;
+    i{
+        color: $edge-other;
+    }
+    span{
+        color: $edge-other;
     }
 }

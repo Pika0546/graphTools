@@ -113,7 +113,7 @@ const EdgeForm = ({tempEdge, isDirected, addEdge, closeEdgeForm}) => {
                 <div className="edge-form__content__group row-2">
                     <label className="row-2__name">Direction :</label>
                     {isDirected === -1 || isDirected === 1 ?
-                                <div>
+                            <div>
                                 <input 
                                     id="yes-dir" 
                                     type="radio" 
