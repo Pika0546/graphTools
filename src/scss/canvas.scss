@@ -94,13 +94,13 @@
     background-color: white;
     color: black;
     border-radius: 50%;
-    z-index: 3;
+    z-index: 4;
     position: absolute;
     font-family: 'Fredoka One', cursive;
     // box-shadow: 0 5px 5px rgba(87, 87, 87, 0.4);
     transition: .2s;
     &:hover{
-        background-color: pink;
+        background-color: rgb(255, 0, 85);
     }
 }
 
@@ -112,8 +112,44 @@
     background-color: $edge-other;
 }
 
+.vertex.is-in-MST{
+    background-color: $edge-other;
+}
+
+
 .vertex.is-in-DFS{
     background-color: $edge-other;
+}
+
+.vertex.is-in-CC-0{
+    background-color:$cc-0 ;
+}
+.vertex.is-in-CC-1{
+    background-color:$cc-1 ;
+}
+.vertex.is-in-CC-2{
+    background-color:$cc-2 ;
+}
+.vertex.is-in-CC-3{
+    background-color:$cc-3 ;
+}
+.vertex.is-in-CC-4{
+    background-color:$cc-4 ;
+}
+.vertex.is-in-CC-5{
+    background-color:$cc-5 ;
+}
+.vertex.is-in-CC-6{
+    background-color:$cc-6 ;
+}
+.vertex.is-in-CC-7{
+    background-color:$cc-7 ;
+}
+.vertex.is-in-CC-8{
+    background-color:$cc-8 ;
+}
+.vertex.is-in-CC-9{
+    background-color:$cc-9 ;
 }
 
 /* ========== EDGE ==============*/
@@ -138,6 +174,16 @@
         white-space: nowrap;
         text-overflow: ellipsis;
     }
+    &:hover{
+        z-index: 3;
+        background-color: rgb(255, 0, 85);
+        i{
+            color: rgb(255, 0, 85);
+        }
+        span{
+            color: rgb(255, 0, 85);
+        }
+    }
 }
 
 .edge.is-in-SP{
@@ -152,6 +198,17 @@
 }
 
 .edge.is-in-DFS{
+    background-color:$edge-other;
+    i{
+        color: $edge-other;
+    }
+    span{
+        color: $edge-other;
+    }
+}
+
+
+.edge.is-in-MST{
     background-color:$edge-other;
     i{
         color: $edge-other;

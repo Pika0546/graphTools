@@ -1,8 +1,23 @@
+import { isCompositeComponentWithType } from "react-dom/cjs/react-dom-test-utils.development";
+
 export const reducer = (state, action) => {
 
+    const copyObject = (object) => {
+        let result = JSON.parse(JSON.stringify(object));
+        return result;
+    }
+
+    const copyArray= (array) =>{
+        let result = [];
+        result = array.map((item)=>{
+            return copyObject(item);
+        })
+        return result;
+    }
+
     const resetStatus = ()=>{
-        let tempVertexList = state.vertexList;
-        let tempEdgeList = state.edgeList;
+        let tempVertexList = copyArray(state.vertexList);
+        let tempEdgeList = copyArray(state.edgeList);
         let n = tempVertexList.length;
         for(let i = 0 ; i < n ; i++){
             if(tempVertexList[i].status !== ""){
@@ -15,7 +30,7 @@ export const reducer = (state, action) => {
                 tempEdgeList[i].status = '';
             }
         }
-        console.log("reset");
+      
         return [tempVertexList,tempEdgeList];
     }
 
@@ -136,6 +151,7 @@ export const reducer = (state, action) => {
                     edgeList[otherEdgeIndex].startY = edgeList[otherEdgeIndex].startY + dentaY;
                     startX = startX - dentaX;
                     startY = startY - dentaY;
+
                 }
                 else{
                     dentaY = R*Math.cos(rad(angle));
@@ -147,20 +163,37 @@ export const reducer = (state, action) => {
                 }
                 
             }
+            else{
+                edgeList.push({ vertex1, 
+                    vertex2, 
+                    length, 
+                    angle, 
+                    id, 
+                    weight, 
+                    dir,
+                    startX,
+                    startY,
+                    status: ""})
+            }
         }
-        if(dir === 0 &&  isInEdgeList(vertex2, vertex1, dir, edgeList) !== -1){
-            return;
+        else{
+            let otherEdgeIndex = isInEdgeList(vertex2, vertex1, dir, edgeList);
+            if(otherEdgeIndex !== -1){
+                edgeList[otherEdgeIndex].weight = weight;
+            }else{
+                edgeList.push({ vertex1, 
+                    vertex2, 
+                    length, 
+                    angle, 
+                    id, 
+                    weight, 
+                    dir,
+                    startX,
+                    startY,
+                    status: ""})
+            }
         }
-        edgeList.push({ vertex1, 
-            vertex2, 
-            length, 
-            angle, 
-            id, 
-            weight, 
-            dir,
-            startX,
-            startY,
-            status: ""})
+       
     }
 
     const floydWarshall = (matrix, src, des) => {
@@ -173,7 +206,7 @@ export const reducer = (state, action) => {
             resultMatrix[i] = matrix[i].slice(0);
             let nextRow = []
             for(let j = 0 ; j < n ; j++){
-                nextRow[j] = 0;
+                nextRow[j] = -1;
             }
             next.push(nextRow);
         }
@@ -214,7 +247,7 @@ export const reducer = (state, action) => {
                     else{
                         let tempPath = [];
                         let k = next[i - 1][j - 1];
-                        if(k === i -1 || k === 0){
+                        if(k === i - 1 || k === -1){
                             resultPaths.push([]);
                         }
                         else{
@@ -343,6 +376,118 @@ export const reducer = (state, action) => {
         return [resultVertices, resultEdges];
     }
 
+    const getTranspose = (matrix) => {
+        const n = matrix.length;
+        let resultMatrix = [];
+        for(let i = 0 ; i < n ; i++){
+            let temp = [];
+            for(let j = 0 ; j < n ; j++){
+                temp.push(0);
+            }
+            resultMatrix.push(temp);
+        }
+
+        for(let i = 0 ; i < n ; i++){
+            for(let j = 0 ; j < n ; j++){
+                resultMatrix[i][j] = matrix[j][i];
+            }
+        }
+        return resultMatrix;
+    }
+
+    const DFSForSCC = (matrix, visited, src, stack)=>{
+        
+        const n = matrix.length;
+        visited[src] = true;
+        for(let i = 0 ; i < n ; i++){
+            if(matrix[src][i] !== Infinity && matrix[src][i]!== 'x' && !visited[i]){
+                DFSForSCC(matrix, visited, i, stack);
+            }
+        }
+        stack.push(src);
+    }
+
+    const countSCC = (matrix) => {
+        const n = matrix.length;
+        let visited = [];
+        let stack = [];
+
+        for(let i = 0; i < n ;i++){
+            visited.push(false);
+        }
+
+        for(let i = 0 ; i < n ; i++){
+            if(visited[i] === false){
+                DFSForSCC(matrix, visited, i, stack);
+            }
+        }
+
+        let reverseMatrix = getTranspose(matrix);
+        let visited2 = [];
+        for(let i = 0; i < n ;i++){
+            visited[i] = false;
+            visited2.push(false);
+        }
+
+        let resultVertices = [];
+        let resultEdges1 = [];
+        let resultEdges2 = [];
+        while(stack.length !== 0){
+            let v = stack.pop();
+            if(visited[v] === false){
+                let result = DFSUtil(reverseMatrix, v, visited);
+                
+                resultVertices.push(result[0]);
+                resultEdges1.push(result[1]);
+            }
+            if(visited2[v] === false){
+                resultEdges2.push(DFSUtil(matrix,v, visited2)[1]);
+            }
+        }
+        return [resultVertices, resultEdges1, resultEdges2];
+    }
+
+    const prim = (matrix, src) => {
+        let parent = [];
+        let key = [];
+        let visited = [];
+        const n = matrix.length;
+        for(let i = 0 ; i < n ; i++){
+            key.push(Infinity);
+            visited.push(false);
+        }
+
+        key[src] = 0;
+        parent[src] = -1;
+        for(let count = 0 ; count < n - 1 ; count ++){
+            let minK = Infinity;
+            let minIndex = -1;
+            for(let i = 0 ; i < n ; i++){
+                if(visited[i] === false && key[i] < minK){
+                    minK = key[i];
+                    minIndex = i;
+                }
+            }
+            visited[minIndex] = true;
+            for(let i = 0 ; i < n ; i++){
+                if(matrix[minIndex][i] === 'x'){
+                    parent[i] = 'x';
+                    continue;
+                }
+                if(matrix[minIndex][i] !== Infinity && visited[i] === false && matrix[minIndex][i] < key[i] ){
+                    parent[i] = minIndex;
+                    key[i] = matrix[minIndex][i];
+                }
+            }
+        }
+        for(let i = 0 ; i < n ; i++){
+            if(parent[i] !== 'x'){
+                parent[i] += 1;
+            }
+        }
+        return parent;
+    }
+
     if(action.type === 'DRAW_FULL_GRAPH'){
 
         let tempMatrix = action.payload;
@@ -396,7 +541,7 @@ export const reducer = (state, action) => {
                   
                     let index1 = findVertex(i + 1, tempVertexList);
                     let index2 = findVertex(j + 1, tempVertexList);
-                   
+                    
                     addEdge(tempVertexList[index1],tempVertexList[index2],tempEdgeList,  isDir, isWeight ? tempMatrix[i][j] : 0);
                 }
                 
@@ -461,7 +606,7 @@ export const reducer = (state, action) => {
 
 	if (action.type === 'DEFAULT') {
         let [tempVertexList, tempEdgeList] = resetStatus();
-        console.log("DEFAULT");
+      
 		return {
             ...state,
             vertexList:tempVertexList,
@@ -474,7 +619,7 @@ export const reducer = (state, action) => {
     if(action.type === "CLEAR_TEMP"){
         
         let [tempVertexList, tempEdgeList] = resetStatus();
-        console.log("CLEAR_TEMP");
+      
 		return {
             ...state,
             vertexList:tempVertexList,
@@ -606,13 +751,9 @@ export const reducer = (state, action) => {
 
     if (action.type === 'ADD_EDGE') {
         let {weight, dir} = action.payload;
-        let vertex1 = state.tempEdge[0];
-        let vertex2 = state.tempEdge[1];
-        let tempEdgeList = state.edgeList.slice(0);
-        let tempVertexList = state.vertexList.slice(0);
-        tempVertexList[findVertex(vertex1.value)].status="";
-        tempVertexList[findVertex(vertex2.value)].status="";
-
+        let vertex1 = {...state.tempEdge[0]};
+        let vertex2 = {...state.tempEdge[1]};
+        let [tempVertexList, tempEdgeList] = resetStatus();
         let id = vertex1.value.toString() + vertex2.value.toString();
         let index = isInEdgeList(vertex1, vertex2, dir, state.edgeList);
         if(index === -1){
@@ -638,11 +779,13 @@ export const reducer = (state, action) => {
                     const R = 15;
                     let dentaX = 0;
                     let dentaY = 0;
+                    let anotherObject = JSON.parse(JSON.stringify(tempEdgeList[otherEdgeIndex]));
+                    let tempY = anotherObject.startY;
                     if(angle < 0){
                         dentaX = R*Math.cos(rad(90+angle));
-                        dentaY = R*Math.sin(rad(90+angle));
+                        dentaY = R*Math.sin(rad(90+angle)); 
                         tempEdgeList[otherEdgeIndex].startX = startX + dentaX;
-                        tempEdgeList[otherEdgeIndex].startY = tempEdgeList[otherEdgeIndex].startY + dentaY;
+                        tempEdgeList[otherEdgeIndex].startY = tempY + dentaY;
                         startX = startX - dentaX;
                         startY = startY - dentaY;
                     }
@@ -650,12 +793,15 @@ export const reducer = (state, action) => {
                         dentaY = R*Math.cos(rad(angle));
                         dentaX = R*Math.sin(rad(angle));
                         tempEdgeList[otherEdgeIndex].startX = startX - dentaX;
-                        tempEdgeList[otherEdgeIndex].startY = tempEdgeList[otherEdgeIndex].startY + dentaY;
+                        tempEdgeList[otherEdgeIndex].startY += dentaY;
                         startX = startX + dentaX;
                         startY = startY - dentaY;
                     }
+                    // anotherObject.startY = tempEdgeList[otherEdgeIndex].startY;
+                    // tempEdgeList[otherEdgeIndex] =  JSON.parse(JSON.stringify(anotherObject));
                 }
             }
+           
             tempEdgeList.push({ vertex1, 
                                 vertex2, 
                                 length, 
@@ -665,12 +811,15 @@ export const reducer = (state, action) => {
                                 dir,
                                 startX,
                                 startY,
-                                status: ""})
+                                status: ""});
+
             return {
                 ...state,
                 openEdgeForm: false,
                 isDirected: dir,
-                edgeList: tempEdgeList,
+                edgeList: tempEdgeList.slice(0).map((item)=>{
+                    return JSON.parse(JSON.stringify(item));
+                }),
                 vertexList: tempVertexList,
                 tempEdge: [],
                 instructionMess: "Click any two vertices to draw an edge"
@@ -776,7 +925,6 @@ export const reducer = (state, action) => {
             tempVertexList[findVertex(des.value)].status = "is-in-SP";
        
         }
-        
         let resultPathList = resultPaths.map((item, index)=>{
             let i = Math.floor(index/vertexAmount);
             let j = index%vertexAmount;
@@ -816,13 +964,62 @@ export const reducer = (state, action) => {
 
     if(action.type === 'START_FIND_MST'){
         let [tempVertexList, tempEdgeList] = resetStatus();
-		return { 
-            ...state, 
-            vertexList: tempVertexList,
-            edgeList: tempEdgeList,
-            tempEdge: [],
-            instructionMess:"I HAVE NOT DONE THIS PART YET."
-        };
+        if(state.isDirected !== 1){
+            let N = state.matrix.length;
+            let src = 0;
+            for(let i = 0 ; i < N ; i++){
+                if(state.matrix[i][i] !== 'x'){
+                    src = i;
+                    break;
+                }
+            }
+            src += 1;
+            let resultDFS = DFS(state.matrix, src);
+            let resultVertices = resultDFS[0];
+            let resultVerticesSize = resultVertices.length;
+            if(resultVerticesSize !== 1){
+                return {
+                    ...state, 
+                    vertexList: tempVertexList,
+                    edgeList: tempEdgeList,
+                    tempEdge: [],
+                    instructionMess:"You graph is not a connected graph so it did not have any spanning tree"
+                }
+            }
+            let vertexListSize = tempVertexList.length;
+            for(let i = 0; i < vertexListSize ; i++){
+                tempVertexList[i].status = 'is-in-MST';
+            }
+
+            let result = prim(state.matrix, src - 1);
+            let resultSize = result.length;
+            let totalWeight = 0;
+            for(let i = 0; i < resultSize; i++){
+                if(result[i] !== 0 && result[i] !== 'x'){
+                    let edgeIndex = findEdge(i + 1, result[i]);
+                    tempEdgeList[edgeIndex].status = "is-in-MST";
+                    totalWeight += tempEdgeList[edgeIndex].weight;
+                }
+            }
+           
+            
+            return { 
+                ...state, 
+                vertexList: tempVertexList,
+                edgeList: tempEdgeList,
+                tempEdge: [],
+                instructionMess:"Minimun Spanning Tree weight: " + totalWeight
+            };
+        }else{
+            return { 
+                ...state, 
+                vertexList: tempVertexList,
+                edgeList: tempEdgeList,
+                tempEdge: [],
+                instructionMess:"Sorry, I haven't made an algorithm for finding MST of a directed graph yet."
+            };
+        }
+		
     }
 
     if(action.type === 'START_DFS' || action.type === 'START_BFS'){
@@ -949,11 +1146,27 @@ export const reducer = (state, action) => {
         }
         src += 1;
         if(N > 0){
-           
-            let result = DFS(state.matrix, src);
-            let resultEdges = result[1];
+            let result = [];
+            if(state.isDirected === 1){
+                result = countSCC(state.matrix);
+                // let resultEdges2 = result[2];
+                // const resultEdges2Size = resultEdges2.length;
+                // for(let i = 0; i < resultEdges2Size; i++){
+                //     let tempSize = resultEdges2[i].length;
+                //     for(let j = 0 ; j < tempSize; j++){
+                //         resultEdges2[i][j][0] +=1;
+                //         resultEdges2[i][j][1] +=1;
+                //     }
+                // }
+                // console.log("2", resultEdges2);
+            }else{
+                result = DFS(state.matrix, src);
+            }
+            
+            let resultEdges1 = result[1];
             let resultVertices = result[0];
-
+            // console.log("1", resultEdges1)
+            
             const resultVerticesSize = resultVertices.length;
             for(let i = 0 ; i < resultVerticesSize; i++){
                 const tempSize = resultVertices[i].length;
@@ -961,37 +1174,45 @@ export const reducer = (state, action) => {
                     resultVertices[i][j] += 1;
                 }
             }
-            const resultEdgesSize = resultEdges.length;
-            for(let i = 0; i < resultEdgesSize; i++){
-                let tempSize = resultEdges[i].length;
-                for(let j = 0 ; j < tempSize; j++){
-                    resultEdges[i][j][0] +=1;
-                    resultEdges[i][j][1] +=1;
-                }
-            }
-          
+            // const resultEdges1Size = resultEdges1.length;
+            // for(let i = 0; i < resultEdges1Size; i++){
+            //     let tempSize = resultEdges1[i].length;
+            //     for(let j = 0 ; j < tempSize; j++){
+            //         resultEdges1[i][j][0] +=1;
+            //         resultEdges1[i][j][1] +=1;
+            //     }
+            // }
+
+            
+        
             let [tempVertexList, tempEdgeList] = resetStatus();
-            let resultList =[];
-            let tempString = <span key="-1" >Amount of Connected Component:  {resultVerticesSize} <br></br> </span>;
+            let resultList = [];
+           
+            let tempString = <span key="-1" >Amount of {state.isDirected === 1 ? "Strongly" : ""} Connected Component:  {resultVerticesSize} <br></br> </span>;
             resultList.push(tempString);
-          
+            let color = 0;
             resultVertices.forEach((item)=>{
                 const n = item.length;
                 let temp = item.join(" ");
-                resultList.push(<span key={temp}>Component: {temp} <br></br></span>)
+                resultList.push(<span key={temp}>Component: {temp} <br></br></span>);
+                
                 for(let i = 0 ; i < n; i++){
-                    tempVertexList[findVertex(item[i])].status = "is-in-DFS"; 
+                    tempVertexList[findVertex(item[i])].status = "is-in-CC-" + color%10; 
                 }
+                color ++;
             })
-          
-            resultEdges.forEach(item=>{
-                const n = item.length;
-                for(let i = 0 ; i < n;i++){
-                    tempEdgeList[findEdge(item[i][0], item[i][1])].status = "is-in-DFS"
-    
-                }
-            })
-            // resultList = resultList.join(", ");
+             
+            // resultEdges.forEach(item=>{
+                
+            //     const n = item.length;
+            //     for(let i = 0 ; i < n;i++){
+            //        if(state.isDirected === 1){
+            //         tempEdgeList[findEdge(item[i][1], item[i][0])].status = "is-in-DFS";
+            //        }else{
+            //             tempEdgeList[findEdge(item[i][0], item[i][1])].status = "is-in-DFS";
+            //        }
+            //     }
+            // })
         
             return {
                 ...state,
@@ -1004,6 +1225,29 @@ export const reducer = (state, action) => {
         return {
             ...state,
             tempEdge: []
+        }
+    }
+
+    if(action.type === 'GET_DISTANCE_MATRIX'){
+        let matrix = state.matrix.slice(0);
+        let displayMatrix = [];
+        let n = matrix.length;
+        for(let i = 0 ; i < n ; i++){
+            let temp = ""
+            for(let j = 0 ; j < n; j++){
+                temp += matrix[i][j];
+                if(j !== n-1){
+                    temp += " ";
+                }
+            }
+            displayMatrix.push(temp);
+            if(i!== n - 1){
+                displayMatrix.push(<br></br>)
+            }
+        }
+        return {
+            ...state,
+            instructionMess:<span>{displayMatrix}</span>
         }
     }
 	throw new Error('no matching action type');

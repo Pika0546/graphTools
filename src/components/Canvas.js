@@ -53,8 +53,12 @@ const Canvas = ({matrix}) => {
             }else if(ac === 'start-BFS'){
                 dispatch({type: 'START_BFS'})
             }else if(ac === 'count-CC'){
-                console.log("CC")
+               
                 dispatch({type: 'COUNT_CC'})
+            }
+            else if(ac === 'get-distance-matrix'){
+              
+                dispatch({type: 'GET_DISTANCE_MATRIX'})
             }
             setAction(ac);
             
@@ -161,14 +165,22 @@ const Canvas = ({matrix}) => {
                     onClick={handleClickOnCanvas}
                 >
                     {state.vertexList.map((item)=>{
-                     
+                        // let colorCode = {};
+                        // if(item.status.indexOf("CC") !== -1){
+
+                        // }
+
                         return   <div
                                     className={"vertex " + item.status}
-                                    style={{top: item.y - vertexSize/2 + 'px', left: item.x - vertexSize/2 + 'px'}}
+                                    style={{
+                                            top: item.y - vertexSize/2 + 'px', 
+                                            left: item.x - vertexSize/2 + 'px'
+                                        }}
                                     key={item.value}
                                     onClick={()=>{
                                         handleClickOnVertex(item)
                                     }}
+                                   
                                 >
                                     <span>{item.value}</span>
                                 </div>
@@ -189,6 +201,7 @@ const Canvas = ({matrix}) => {
                             arrow =  <i className="fas fa-caret-right"></i>
                         }
                         
+
 
                         return   <div
                                     className={"edge " + item.status}

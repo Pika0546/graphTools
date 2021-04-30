@@ -124,7 +124,14 @@ const Tools = ({handleToolsAction, action}) => {
                     >
                        <span> Minimum Spanning Tree</span>
                     </div>
-                    
+                    <div 
+                        className="tools__btn"
+                        onClick={()=>{
+                            handleToolsAction('get-distance-matrix')
+                        }}
+                    >
+                       <span> Get Distance Matrix</span>
+                    </div>
                 </div>
             </div>
         </div>
