@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/graphTools/static/css/main.258173d8.chunk.css",
+    "main.js": "/graphTools/static/js/main.443ca975.chunk.js",
+    "main.js.map": "/graphTools/static/js/main.443ca975.chunk.js.map",
+    "runtime-main.js": "/graphTools/static/js/runtime-main.36db4e99.js",
+    "runtime-main.js.map": "/graphTools/static/js/runtime-main.36db4e99.js.map",
+    "static/js/2.cbcd3020.chunk.js": "/graphTools/static/js/2.cbcd3020.chunk.js",
+    "static/js/2.cbcd3020.chunk.js.map": "/graphTools/static/js/2.cbcd3020.chunk.js.map",
+    "index.html": "/graphTools/index.html",
+    "static/css/main.258173d8.chunk.css.map": "/graphTools/static/css/main.258173d8.chunk.css.map",
+    "static/js/2.cbcd3020.chunk.js.LICENSE.txt": "/graphTools/static/js/2.cbcd3020.chunk.js.LICENSE.txt",
+    "static/media/homeIcon1.038fa404.png": "/graphTools/static/media/homeIcon1.038fa404.png",
+    "static/media/point.cd46e3f2.png": "/graphTools/static/media/point.cd46e3f2.png",
+    "static/media/remove.8bb4523c.png": "/graphTools/static/media/remove.8bb4523c.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.36db4e99.js",
+    "static/js/2.cbcd3020.chunk.js",
+    "static/css/main.258173d8.chunk.css",
+    "static/js/main.443ca975.chunk.js"
+  ]
+}
