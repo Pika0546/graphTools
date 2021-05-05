@@ -44,7 +44,7 @@ const Navbar = ({getUserOption}) => {
                             getUserOption(1)
                         }}
                     >
-                        Adjacency matrix
+                        Matrix
                     </li>
                    
                     <li  
@@ -83,7 +83,7 @@ const Navbar = ({getUserOption}) => {
                             setOpenMenu(false);
                         }}
                     >
-                        <span>Adjacency Matrix</span>
+                        <span>Matrix</span>
                     </li >
                     <li  
                         className="menu__content__item"

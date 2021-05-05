@@ -32,33 +32,37 @@ const Canvas = ({matrix}) => {
         }
         else{
             if(ac === 'adding-vertex'){
-                dispatch({type: "START_ADD_VERTEX"})
+                dispatch({type: "START_ADD_VERTEX"});
             }
             else if(ac === 'adding-edge'){
-                dispatch({type: "START_ADD_EDGE"})
+                dispatch({type: "START_ADD_EDGE"});
             }
             else if(ac === 'removing'){
-                dispatch({type: "START_REMOVING"})
+                dispatch({type: "START_REMOVING"});
             }
             else if(ac === 'default'){
-                dispatch({type: "DEFAULT"})
+                dispatch({type: "DEFAULT"});
             }
             else if(ac ==='start-SP'){
-                dispatch({type: 'START_FIND_SP'})
+                dispatch({type: 'START_FIND_SP'});
             }
             else if(ac === 'start-MST'){
-                dispatch({type: 'START_FIND_MST'})
-            }else if(ac === 'start-DFS'){
-                dispatch({type: 'START_DFS'})
-            }else if(ac === 'start-BFS'){
-                dispatch({type: 'START_BFS'})
-            }else if(ac === 'count-CC'){
-               
-                dispatch({type: 'COUNT_CC'})
+                dispatch({type: 'START_FIND_MST'});
+            }
+            else if(ac === 'start-DFS'){
+                dispatch({type: 'START_DFS'});
+            }
+            else if(ac === 'start-BFS'){
+                dispatch({type: 'START_BFS'});
+            }
+            else if(ac === 'count-CC'){
+                dispatch({type: 'COUNT_CC'});
             }
             else if(ac === 'get-distance-matrix'){
-              
-                dispatch({type: 'GET_DISTANCE_MATRIX'})
+                dispatch({type: 'GET_DISTANCE_MATRIX'});
+            }
+            else if(ac === 'euler-trail'){
+                dispatch({type: 'EULER_TRAIL'});
             }
             setAction(ac);
             

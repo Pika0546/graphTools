@@ -1,4 +1,4 @@
-import { isCompositeComponentWithType } from "react-dom/cjs/react-dom-test-utils.development";
+// import { isCompositeComponentWithType } from "react-dom/cjs/react-dom-test-utils.development";
 
 export const reducer = (state, action) => {
 
@@ -12,6 +12,20 @@ export const reducer = (state, action) => {
         result = array.map((item)=>{
             return copyObject(item);
         })
+        return result;
+    }
+
+    const copyMatrix = (matrix)=>{
+        let result = [];
+        const n = matrix.length;
+        for(let i = 0 ; i < n  ;i++){
+            let n1 = matrix[i].length;
+            let temp = []
+            for(let j = 0 ; j < n1; j++){
+                temp.push(matrix[i][j]);
+            }
+            result.push(temp);
+        }
         return result;
     }
 
@@ -32,6 +46,32 @@ export const reducer = (state, action) => {
         }
       
         return [tempVertexList,tempEdgeList];
+    }
+
+    const isInList = (item, array) => {
+        const n = array.length;
+        for(let i = 0 ; i < n ; i++){
+            if(array[i] === item){
+                return true;
+            }
+        }
+        return false;
+      
+    }
+
+    const isChildOfList = (arr1, arr2) => {
+        const arr1Size = arr1.length;
+        const arr2Size = arr2.length;
+        if(arr1Size > arr2Size){
+            return false;
+        }
+       
+        for(let i = 0 ; i < arr1Size; i++){
+            if(!isInList(arr1[i], arr2)){
+                return false;
+            }
+        }
+        return true;
     }
 
     const calculateEdgeProp = (vertex1, vertex2) => {
@@ -137,8 +177,8 @@ export const reducer = (state, action) => {
             startX = vertex2.x;
             startY = vertex2.y;
         }
-       
-        if(dir !== 0){
+      
+        if(dir === 1){
             let otherEdgeIndex = isInEdgeList(vertex2, vertex1, dir, edgeList);
             if(otherEdgeIndex !== -1){
                 const R = 15;
@@ -151,7 +191,6 @@ export const reducer = (state, action) => {
                     edgeList[otherEdgeIndex].startY = edgeList[otherEdgeIndex].startY + dentaY;
                     startX = startX - dentaX;
                     startY = startY - dentaY;
-
                 }
                 else{
                     dentaY = R*Math.cos(rad(angle));
@@ -164,17 +203,18 @@ export const reducer = (state, action) => {
                 
             }
             else{
-                edgeList.push({ vertex1, 
-                    vertex2, 
-                    length, 
-                    angle, 
-                    id, 
-                    weight, 
-                    dir,
-                    startX,
-                    startY,
-                    status: ""})
+                
             }
+            edgeList.push({ vertex1, 
+                vertex2, 
+                length, 
+                angle, 
+                id, 
+                weight, 
+                dir,
+                startX,
+                startY,
+                status: ""})
         }
         else{
             let otherEdgeIndex = isInEdgeList(vertex2, vertex1, dir, edgeList);
@@ -488,6 +528,384 @@ export const reducer = (state, action) => {
         return parent;
     }
 
+    const getUndirectedGraph = (matrix) => {
+        const n = matrix.length;
+        let result = [];
+        for(let i = 0 ; i < n ;i++){
+            let temp = [];
+            for(let j = 0 ; j  < n ;j ++){
+                temp.push(Infinity);
+            }
+            result.push(temp);
+        }
+        console.log(matrix);
+        for(let i = 0 ; i < n; i++){
+            for(let j = 0 ; j < n ; j++){
+                if(result[i][j] !== Infinity && matrix[i][j] === Infinity){
+
+                }else{
+                    result[i][j] = matrix[i][j];
+                    result[j][i] = matrix[i][j];
+                }
+            }
+        }
+        return result;
+    }
+
+    const getVertexDegree = (matrix, isDir) => {
+        const n = matrix.length;
+        if(isDir !== 1){
+            let result = [];
+            for(let i=0 ; i < n ;i++){
+                if(matrix[i][i] === 'x'){
+                    result.push('x');
+                }else{
+                    let count = 0;
+                    for(let j = 0 ; j < n; j++){
+                        if(i!== j && matrix[i][j] !== Infinity && matrix[i][j] !== 'x'){
+                            count ++;
+                        }
+                    }
+                    result.push(count);
+                }
+            }
+            return result;
+        }else{
+            let result = [];
+            for(let i = 0; i < n ;i++){
+                if(matrix[i][i] === 'x'){
+                    result.push(['x', 'x']);
+                }
+                else{
+                    let count1 = 0;
+                    let count2 = 0;
+                    let temp = [];
+                    for(let j = 0 ; j < n ;j++){
+                        if(i !== j && matrix[i][j] !== Infinity && matrix[i][j] !== 'x'){
+                            count1 ++;
+                        }
+                        if(i !== j && matrix[j][i] !== Infinity && matrix[j][i] !== 'x'){
+                            count2 ++;
+                        }
+                    }
+                    temp.push(count1);
+                    temp.push(count2);
+                    result.push(temp);
+                }
+            }
+            return result;
+        }
+
+    }
+
+    const checkEulerian= (matrix, isDir) => {
+        let vertexDegree = getVertexDegree(matrix, isDir);
+       
+        let n = vertexDegree.length;
+        if(isDir !== 1){
+            let countOdd = 0;
+          
+            for(let i = 0 ; i < n ; i++){
+                if(matrix[i][i] !== 'x'){
+                    if(vertexDegree[i]%2 === 1){
+                        countOdd++;
+                    }
+                }
+            }
+            if(countOdd === 0){
+                return 0;
+            }
+            if(countOdd === 2){
+                return 1;
+            }
+            return countOdd/2;
+        }
+        else{
+            let subIn = [];
+            let subOut = [];
+            for(let i = 0 ; i < n ; i++){
+                if(matrix[i][i] !== 'x'){
+                    subIn.push(vertexDegree[i][1] - vertexDegree[i][0]);
+                    subOut.push(vertexDegree[i][0] - vertexDegree[i][1]);
+                }
+                else{
+                    subIn.push('x');
+                    subOut.push('x');
+                }
+            }
+            let count0 = 0;
+            let countIn1 = 0;
+            let countOut1 = 0;
+            let countActualVertex = 0;
+            for(let i = 0; i < n ; i++){
+                if(subIn[i] === 1){
+                    countIn1++;
+                }
+                if(subOut[i] === 1){
+                    countOut1++;
+                }
+                if(subIn[i] === 0 && subOut[i] === 0){
+                    count0++;
+                }
+                if(matrix[i][i] !== 'x'){
+                    countActualVertex ++;
+                }
+            }
+            if(count0 === countActualVertex){
+                return 0;
+            }
+            if(countIn1 === 1 && countOut1 === 1 && count0 === countActualVertex-2){
+                return 1;
+            }
+            return 2;
+        }
+
+    }
+
+    const FleuryDFS = (matrix, u, visited) => {
+        const n = matrix.length;
+        visited[u] = true;
+        let count = 1;
+     
+        for(let i = 0 ; i < n ;i++){
+            if(matrix[u][i] !== 'x' && matrix[u][i] !== Infinity && visited[i] === false){
+                count += FleuryDFS(matrix, i, visited);
+            }
+        }
+        return count;
+    }
+
+    const fleuryCheckBrigde = (matrix, u, v) => {
+        const n = matrix.length;
+        let visited = [];
+        for(let i = 0 ; i < n  ;i++){
+            visited.push(false);
+        }
+      
+        let count1 = FleuryDFS(matrix, u, visited);
+        let temp = matrix[u][v];
+        matrix[u][v] = Infinity;
+        if(state.isDirected !== 1){
+                matrix[v][u] = Infinity;
+        }
+        for(let i = 0 ; i < n  ;i++){
+            visited[i] = false;
+        }
+        let count2 = FleuryDFS(matrix, u, visited);
+        matrix[u][v] = temp;
+        if(state.isDirected !== 1){
+            matrix[v][u] = temp;
+       }
+        return (count1 > count2);
+    }
+
+    const fleuryCheckEdge = (matrix, u, v) =>{
+        let count = 0;
+        const n = matrix.length;
+        let visited = [];
+        for(let i = 0 ; i < n  ;i++){
+            if(i!==u && matrix[u][i] !== 'x' && matrix[u][i] !== Infinity){
+                count++;
+            }
+            visited.push(false);
+        }
+        if(count === 1){
+            return true;
+        }
+        if(!fleuryCheckBrigde(matrix,u ,v)){
+            return true;
+        }
+        for(let i = 0 ; i < n ; i++){
+            if(i !== u && i!== v){
+
+                if(matrix[u][i] !== Infinity && matrix[u][i] !== 'x'){
+                    let isBrigde = fleuryCheckBrigde(matrix, u, i);
+                    if(isBrigde === false){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    const fleuryRecur = (matrix, vertex, result, flag) => {
+       
+  
+        if(flag[0]){
+            const n = matrix.length;
+            
+            for(let i = 0 ; i < n ; i++){
+             
+                if(i !== vertex && flag[0]){ 
+              
+                    if(matrix[vertex][i] !== 'x' && matrix[vertex][i] !== Infinity && fleuryCheckEdge(matrix, vertex, i)){
+                       let isOkEdge = fleuryCheckEdge(matrix,vertex, i);
+                       if(isOkEdge){
+                            result.push([vertex, i]);
+                            
+                            matrix[vertex][i] = Infinity;
+                            if(state.isDirected !== 1){
+                                matrix[i][vertex] = Infinity;
+                            }
+                            fleuryRecur(matrix,i,result, flag);
+                       }
+                    }
+                }
+            }
+        }
+        flag[0] = false;
+    }   
+
+    const fleury = (matrix, isDir) => {
+        const n = matrix.length;
+        let vertexDegree = getVertexDegree(matrix, isDir);
+        if(isDir !== 1){
+            let src = 0;
+            for(let i = 0 ; i < n ; i++){
+                if(state.matrix[i][i] !== 'x'){
+                    src = i;
+                    break;
+                }
+            }
+            src += 1;
+            let CC = DFS(matrix, src)[0];
+        
+            const numberOfCC = CC.length;
+            let result = [];
+            for(let i = 0 ; i < numberOfCC; i++){
+                const tempSize = CC[i].length;
+                let u = CC[i][0];
+                let oddVertices = [];
+                for(let j = 0 ; j < tempSize; j++){
+                    if(vertexDegree[CC[i][j]]%2 !== 0){
+                        // u = CC[i][j];
+                        oddVertices.push(CC[i][j]);
+                        
+                    }
+                }
+                if(oddVertices.length === 0){
+                    oddVertices.push(u);
+                }
+            
+                for(let j = 0; j < oddVertices.length; j++){
+                    let tempResult = [];
+                    let flag = [true];
+                    fleuryRecur(matrix, oddVertices[j], tempResult, flag);
+                    if(tempResult.length !== 0){
+                        result.push(tempResult);
+                    }
+                }
+            }
+            return result;
+        }
+        else{
+            console.log("Bậc:", vertexDegree);            
+            let tempMatrix = copyMatrix(matrix);
+            let isEulerian = checkEulerian(matrix, isDir)
+            let scc = countSCC(matrix)[0];
+            if(isEulerian === 0){
+                //Euler Circuit
+                let nonZeroVertex = [];
+                let flag = false;
+                for(let i = 0 ; i < n ; i++){
+                    if(vertexDegree[i][0] !== 0 && vertexDegree[i][1] !== 0 && vertexDegree[i][0]!== 'x'){
+                        nonZeroVertex.push(i);
+                    }
+                }
+                let numberOfScc = scc.length;
+                for(let i = 0 ; i < numberOfScc; i++){
+                    if(isChildOfList(nonZeroVertex, scc[i])){
+                        flag = true;
+                        break;
+                    }
+                }
+                if(flag){
+                    let src = 0;
+                    for(let i = 0 ; i < n ; i++){
+                        if(state.matrix[i][i] !== 'x'){
+                            src = i;
+                            break;
+                        }
+                    }
+                    let recurFlag = [true];
+                    let result = [];
+                    fleuryRecur(tempMatrix,src, result, recurFlag);
+                    let temp = [];
+                    temp.push(0);
+                    temp.push(result);
+                    return temp;
+                }
+                else{
+                    let temp = [];
+                    temp.push(0);
+                    temp.push([]);
+                    return temp;
+                }
+            }
+            else if(isEulerian === 1){
+                let nonZeroVertex = [];
+                let flag = false;
+                for(let i = 0 ; i < n ; i++){
+                    if(vertexDegree[i][0] !== 0 && vertexDegree[i][1] !== 0 && vertexDegree[i][0]!== 'x'){
+                        nonZeroVertex.push(i);
+                    }
+                }
+               
+                let unDirectedGraph = getUndirectedGraph(copyMatrix(tempMatrix));
+                let src = 0;
+                for(let i = 0 ; i < n ; i++){
+                    if(unDirectedGraph[i][i] !== 'x'){
+                        src = i;
+                        break;
+                    }
+                }
+                src += 1;
+                let cc = DFS(unDirectedGraph, src)[0];
+                console.log('cc', cc);
+                console.log("nonZeroVertex", nonZeroVertex);
+                let numberOfCc = cc.length;
+                for(let i = 0 ; i < numberOfCc; i++){
+                    if(isChildOfList(nonZeroVertex, cc[i])){
+                        flag = true;
+                        break;
+                    }
+                }
+                if(flag){
+                    for(let i = 0 ; i < n ; i++){
+                        if(vertexDegree[i][0] !== 'x'){
+                            if(vertexDegree[i][0] > vertexDegree[i][1]){
+                                src = i;
+                                break;
+                            }
+                        }
+                    }
+                    let recurFlag = [true];
+                    let result = [];
+                    fleuryRecur(tempMatrix, src, result, recurFlag);
+                    let temp = [];
+                    temp.push(1);
+                    temp.push(result);
+                    return temp;
+                }
+                else{
+                  
+
+                    let temp = [];
+                    temp.push(2);
+                    temp.push([]);
+                    return temp;
+                }
+                
+                //Euler path;
+            }
+            else{
+                return [2, []];
+            }
+           
+        }
+    }
+
     if(action.type === 'DRAW_FULL_GRAPH'){
 
         let tempMatrix = action.payload;
@@ -784,18 +1202,34 @@ export const reducer = (state, action) => {
                     if(angle < 0){
                         dentaX = R*Math.cos(rad(90+angle));
                         dentaY = R*Math.sin(rad(90+angle)); 
-                        tempEdgeList[otherEdgeIndex].startX = startX + dentaX;
-                        tempEdgeList[otherEdgeIndex].startY = tempY + dentaY;
+                        if((tempEdgeList[otherEdgeIndex].startX === tempEdgeList[otherEdgeIndex].vertex1.x && tempEdgeList[otherEdgeIndex].startY === tempEdgeList[otherEdgeIndex].vertex1.y)
+                            ||(tempEdgeList[otherEdgeIndex].startX === tempEdgeList[otherEdgeIndex].vertex2.x & tempEdgeList[otherEdgeIndex].startY === tempEdgeList[otherEdgeIndex].vertex2.y) ){
+                                tempEdgeList[otherEdgeIndex].startX = startX + dentaX;
+                                tempEdgeList[otherEdgeIndex].startY = tempY + dentaY;
+                            }
+                       
                         startX = startX - dentaX;
                         startY = startY - dentaY;
+                        if(startX === tempEdgeList[otherEdgeIndex].startX && startY ===  tempEdgeList[otherEdgeIndex].startY){
+                            tempEdgeList[otherEdgeIndex].startX = startX + dentaX + dentaX;
+                            tempEdgeList[otherEdgeIndex].startY = tempY + dentaY + dentaY;
+                        }
                     }
                     else{
                         dentaY = R*Math.cos(rad(angle));
                         dentaX = R*Math.sin(rad(angle));
-                        tempEdgeList[otherEdgeIndex].startX = startX - dentaX;
-                        tempEdgeList[otherEdgeIndex].startY += dentaY;
+                        if((tempEdgeList[otherEdgeIndex].startX === tempEdgeList[otherEdgeIndex].vertex1.x && tempEdgeList[otherEdgeIndex].startY === tempEdgeList[otherEdgeIndex].vertex1.y)
+                            ||(tempEdgeList[otherEdgeIndex].startX === tempEdgeList[otherEdgeIndex].vertex2.x & tempEdgeList[otherEdgeIndex].startY === tempEdgeList[otherEdgeIndex].vertex2.y) ){
+                                tempEdgeList[otherEdgeIndex].startX = startX - dentaX;
+                                tempEdgeList[otherEdgeIndex].startY += dentaY;
+                            }
+                      
                         startX = startX + dentaX;
                         startY = startY - dentaY;
+                        if(startX === tempEdgeList[otherEdgeIndex].startX && startY ===  tempEdgeList[otherEdgeIndex].startY){
+                            tempEdgeList[otherEdgeIndex].startX = startX - dentaX - dentaX;
+                            tempEdgeList[otherEdgeIndex].startY = tempY + dentaY + dentaY;
+                        }
                     }
                     // anotherObject.startY = tempEdgeList[otherEdgeIndex].startY;
                     // tempEdgeList[otherEdgeIndex] =  JSON.parse(JSON.stringify(anotherObject));
@@ -1038,7 +1472,7 @@ export const reducer = (state, action) => {
         let result = DFS(state.matrix, vertex.value);
         let resultEdges = result[1];
         let resultVertices = result[0];
-     
+
         const resultVerticesSize = resultVertices.length;
         for(let i = 0 ; i < resultVerticesSize; i++){
             const tempSize = resultVertices[i].length;
@@ -1149,23 +1583,13 @@ export const reducer = (state, action) => {
             let result = [];
             if(state.isDirected === 1){
                 result = countSCC(state.matrix);
-                // let resultEdges2 = result[2];
-                // const resultEdges2Size = resultEdges2.length;
-                // for(let i = 0; i < resultEdges2Size; i++){
-                //     let tempSize = resultEdges2[i].length;
-                //     for(let j = 0 ; j < tempSize; j++){
-                //         resultEdges2[i][j][0] +=1;
-                //         resultEdges2[i][j][1] +=1;
-                //     }
-                // }
-                // console.log("2", resultEdges2);
+              
             }else{
                 result = DFS(state.matrix, src);
             }
             
-            let resultEdges1 = result[1];
             let resultVertices = result[0];
-            // console.log("1", resultEdges1)
+            
             
             const resultVerticesSize = resultVertices.length;
             for(let i = 0 ; i < resultVerticesSize; i++){
@@ -1174,16 +1598,6 @@ export const reducer = (state, action) => {
                     resultVertices[i][j] += 1;
                 }
             }
-            // const resultEdges1Size = resultEdges1.length;
-            // for(let i = 0; i < resultEdges1Size; i++){
-            //     let tempSize = resultEdges1[i].length;
-            //     for(let j = 0 ; j < tempSize; j++){
-            //         resultEdges1[i][j][0] +=1;
-            //         resultEdges1[i][j][1] +=1;
-            //     }
-            // }
-
-            
         
             let [tempVertexList, tempEdgeList] = resetStatus();
             let resultList = [];
@@ -1201,18 +1615,6 @@ export const reducer = (state, action) => {
                 }
                 color ++;
             })
-             
-            // resultEdges.forEach(item=>{
-                
-            //     const n = item.length;
-            //     for(let i = 0 ; i < n;i++){
-            //        if(state.isDirected === 1){
-            //         tempEdgeList[findEdge(item[i][1], item[i][0])].status = "is-in-DFS";
-            //        }else{
-            //             tempEdgeList[findEdge(item[i][0], item[i][1])].status = "is-in-DFS";
-            //        }
-            //     }
-            // })
         
             return {
                 ...state,
@@ -1233,21 +1635,105 @@ export const reducer = (state, action) => {
         let displayMatrix = [];
         let n = matrix.length;
         for(let i = 0 ; i < n ; i++){
-            let temp = ""
+            let temp = []
             for(let j = 0 ; j < n; j++){
-                temp += matrix[i][j];
-                if(j !== n-1){
-                    temp += " ";
-                }
+                temp.push(<td>{matrix[i][j]}</td>);
+               
             }
-            displayMatrix.push(temp);
-            if(i!== n - 1){
-                displayMatrix.push(<br></br>)
-            }
+            displayMatrix.push(<tr>{temp}</tr>);
+            
         }
         return {
             ...state,
-            instructionMess:<span>{displayMatrix}</span>
+            instructionMess:<table className="matrix">{displayMatrix}</table>
+        }
+    }
+
+    if(action.type === 'EULER_TRAIL'){
+      
+        let matrix = copyMatrix(state.matrix);
+        let screenResult = [];
+
+        if(state.isDirected !== 1){
+         
+            let result = fleury(matrix, state.isDirected);
+            console.log("Result", result);
+            let resultSize = result.length;
+            
+            if(resultSize === 1){
+                let edgeNum = result[0].length;
+             
+                if(edgeNum > 1 && (result[0][0][0] === result[0][edgeNum - 1][1] ||result[0][0][0] === result[0][edgeNum - 1][0]) ){
+                    screenResult.push("This is an Eulerian graph");
+                    screenResult.push(<br key={screenResult.length}></br>);
+                }else{
+                    screenResult.push("This graph is not a Eulerian Graph but it have Euler path");
+                     screenResult.push(<br key={screenResult.length}></br>);
+                }
+            }
+            else if(resultSize === 0){
+                screenResult.push("This is a Eulerian graph");
+            }
+            else{
+                screenResult.push("This graph is not eulerian and does not have any euler path");
+                screenResult.push(<br key={screenResult.length}></br>);
+                screenResult.push("It can be draw by " + resultSize + " draw ");
+                screenResult.push(<br key={screenResult.length}></br>);
+            }
+            for(let i = 0 ; i < resultSize; i ++){
+                let eulerSize = result[i].length;
+                for(let j = 0 ; j < eulerSize; j++){
+                    for(let k = 0 ; k < result[i][j].length; k++){
+                        result[i][j][k] += 1;
+                    }
+                    let edge = result[i][j].join("-");
+                    screenResult.push(edge);
+                    if(j !== eulerSize - 1){
+                        screenResult.push(", ");
+                    }
+                }
+                if(i !== resultSize - 1){
+                    screenResult.push(<br key={screenResult.length}></br>);
+                }
+            }
+            return {
+                ...state,
+                instructionMess: <span>{screenResult}</span>
+            }
+        }else{
+            let isEulerian = checkEulerian(matrix,state.isDirected);
+            console.log(isEulerian);
+            let result = fleury(matrix, state.isDirected);
+            console.log("Final", result)
+            let resultFlag = result[0];
+            let screenResult = [];
+            if(resultFlag !== 2){
+                let eulerCircuit = result[1];
+         
+                if(resultFlag === 0){
+                      screenResult.push("This is an Eulerian graph");
+                }else{
+                    screenResult.push("This graph is not a Eulerian Graph but it have Euler path");
+                }
+                screenResult.push(<br key={screenResult.length}></br>);
+                const resultSize = eulerCircuit.length;
+                for(let i = 0 ; i < resultSize; i++){
+                    eulerCircuit[i][0] += 1; eulerCircuit[i][1] += 1;
+                    let edge = eulerCircuit[i].join("-");
+                    screenResult.push(edge);
+                    if(i !== resultSize - 1){
+                        screenResult.push(", ");
+                    }
+                }
+                
+            }
+            else {
+                screenResult.push(screenResult.push("This graph is not eulerian and does not have any euler path"));
+            }
+            return {
+                ...state,
+                instructionMess: <span>{screenResult}</span>
+            }
         }
     }
 	throw new Error('no matching action type');

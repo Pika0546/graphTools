@@ -132,6 +132,14 @@ const Tools = ({handleToolsAction, action}) => {
                     >
                        <span> Get Distance Matrix</span>
                     </div>
+                    <div 
+                        className="tools__btn"
+                        onClick={()=>{
+                            handleToolsAction('euler-trail')
+                        }}
+                    >
+                       <span> Euler Trail</span>
+                    </div>
                 </div>
             </div>
         </div>
