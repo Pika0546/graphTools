@@ -63,6 +63,8 @@ const Canvas = ({matrix}) => {
             }
             else if(ac === 'euler-trail'){
                 dispatch({type: 'EULER_TRAIL'});
+            }else if(ac === 'hamilton-trail'){
+                dispatch({type: 'HAMILTON_TRAIL'});
             }
             setAction(ac);
             

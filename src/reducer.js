@@ -538,7 +538,6 @@ export const reducer = (state, action) => {
             }
             result.push(temp);
         }
-        console.log(matrix);
         for(let i = 0 ; i < n; i++){
             for(let j = 0 ; j < n ; j++){
                 if(result[i][j] !== Infinity && matrix[i][j] === Infinity){
@@ -800,7 +799,7 @@ export const reducer = (state, action) => {
             return result;
         }
         else{
-            console.log("Bậc:", vertexDegree);            
+         
             let tempMatrix = copyMatrix(matrix);
             let isEulerian = checkEulerian(matrix, isDir)
             let scc = countSCC(matrix)[0];
@@ -862,8 +861,6 @@ export const reducer = (state, action) => {
                 }
                 src += 1;
                 let cc = DFS(unDirectedGraph, src)[0];
-                console.log('cc', cc);
-                console.log("nonZeroVertex", nonZeroVertex);
                 let numberOfCc = cc.length;
                 for(let i = 0 ; i < numberOfCc; i++){
                     if(isChildOfList(nonZeroVertex, cc[i])){
@@ -905,6 +902,102 @@ export const reducer = (state, action) => {
            
         }
     }
+
+    const isSafeForHamilton = (v, matrix, path, pos) => {
+        if(matrix[path[pos - 1]][v] === Infinity || matrix[path[pos - 1]][v] === 'x' ){
+            return false;
+        }
+
+        for(let i = 0 ; i < pos; i++){
+            if(path[i] === v){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    const hamiltonRecur = (matrix, path, pos) => {
+        if(pos === state.vertexList.length){
+            if(matrix[path[pos-1]][path[0]] !== Infinity && matrix[path[pos-1]][path[0]] !== 'x'){
+                return true;
+            }
+            return false;
+        }
+        const n = matrix.length;
+        for(let i = 0 ; i < n ; i++){
+            if(isSafeForHamilton(i, matrix, path, pos) === true){
+                path[pos] = i;
+                let ham = hamiltonRecur(matrix, path, pos+1);
+                if(ham === true){
+                    return true;
+                }
+                path[pos] = -1;
+            }
+        }
+        return false;
+    }
+
+    const hamiltonRecur2 = (matrix, path, pos) => {
+        if(pos === state.vertexList.length){
+            return true;
+        }
+        const n = matrix.length;
+        for(let i = 0 ; i < n ; i++){
+            if(isSafeForHamilton(i, matrix, path, pos) === true){
+                path[pos] = i;
+                let ham = hamiltonRecur2(matrix, path, pos+1);
+                if(ham === true){
+                    return true;
+                }
+                path[pos] = -1;
+            }
+        }
+        return false;
+    }
+
+    const hamilton = (matrix, mode) => {
+        let path = [];
+        const n = matrix.length;
+        let src = -1;
+        for(let i = 0 ; i < n; i++){
+            if(matrix[i][i] !== 'x'){
+                path.push(-1);
+                if(src === -1){
+                    src = i;
+                }
+            }
+        }
+        path[0] = src;
+        if(mode === 1){
+            hamiltonRecur(matrix, path, 1);
+        }else{
+            // hamiltonRecur2(matrix, path, 1);
+            for(let i = 0 ; i < n; i++){
+                if(matrix[i][i] !== 'x'){
+                    path[0] = i;
+                    hamiltonRecur2(matrix, path, 1);
+                    let pathSize = path.length;
+                    let flag = true;
+                    for(let i = 0 ; i < pathSize; i++){
+                        if(path[i] < 0){
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if(flag === true){
+                        break;
+                    }
+                    for(let i = 0 ; i < pathSize;i++){
+                        path[i] = -1;
+                    }
+                }
+            }
+        }
+        
+       
+        return path;
+    }
+
 
     if(action.type === 'DRAW_FULL_GRAPH'){
 
@@ -1657,7 +1750,7 @@ export const reducer = (state, action) => {
         if(state.isDirected !== 1){
          
             let result = fleury(matrix, state.isDirected);
-            console.log("Result", result);
+          
             let resultSize = result.length;
             
             if(resultSize === 1){
@@ -1702,9 +1795,9 @@ export const reducer = (state, action) => {
             }
         }else{
             let isEulerian = checkEulerian(matrix,state.isDirected);
-            console.log(isEulerian);
+           
             let result = fleury(matrix, state.isDirected);
-            console.log("Final", result)
+
             let resultFlag = result[0];
             let screenResult = [];
             if(resultFlag !== 2){
@@ -1734,6 +1827,68 @@ export const reducer = (state, action) => {
                 ...state,
                 instructionMess: <span>{screenResult}</span>
             }
+        }
+    }
+    
+    if(action.type === 'HAMILTON_TRAIL'){
+        let matrix = copyMatrix(state.matrix);
+        let circuit = hamilton(matrix, 1)
+        let path = hamilton(matrix, 2);
+       
+        const n = state.vertexList.length;
+        const pathSize = path.length;
+        const circuitSize = circuit.length;
+        for(let i = 0 ; i < pathSize; i++){
+            path[i] += 1;
+            circuit[i] += 1;
+        }
+     
+        if(n === 0){
+            return{
+                ...state,
+                instructionMess:"Oh c'mon man ! You have not created anything !"
+            }
+        }
+        if(n === 1){
+            return {
+                ...state,
+                instructionMess:"Your graph only have one vertex. So it is a Hamiltonian or not ? Who knows.",
+            }
+        }
+        if(n === 2){
+            if(pathSize < 2){
+                return {
+                    ...state,
+                    instructionMess:"Your graph does not have Hamilton Circuit and Hamilton path",
+                }
+            }else{
+                return {
+                    ...state,
+                    instructionMess:"Your graph have Hamiton Path: " + path.join(", "),
+                }
+            }
+        }
+       
+        for(let i = 0 ; i < n ;i++){
+            if(path[i] < 1){
+                return {
+                    ...state,
+                    instructionMess:"Your graph does not have Hamilton Circuit and Hamilton path",
+                }
+            }
+        }
+        
+        if(circuit[circuitSize - 1] > 0 && matrix[circuit[circuitSize - 1] - 1][circuit[0] - 1] !== Infinity && matrix[circuit[circuitSize - 1] - 1][circuit[0] - 1] !== 'x' ){
+            circuit.push(circuit[0]);
+            return{
+                ...state,
+                instructionMess:"Your graph have Hamilton Circuit: " + circuit.join(", "),
+            }
+        }
+       
+        return{
+            ...state,
+            instructionMess:"Your graph have Hamilton Path: " + path.join(", "),
         }
     }
 	throw new Error('no matching action type');

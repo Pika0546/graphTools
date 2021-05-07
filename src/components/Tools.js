@@ -4,6 +4,7 @@ import vertexImg from '../img/point.png';
 import edgeImg from '../img/edge.png';
 import removeImg from '../img/remove.png';
 import clearImg from '../img/clear.png';
+import moveImg from '../img/move.png';
 import calculatingImg from '../img/calculating.png';
 
 const Tools = ({handleToolsAction, action}) => {
@@ -21,6 +22,35 @@ const Tools = ({handleToolsAction, action}) => {
                     alt="tools-icon" 
                     src={defaultImg}
                 ></img>
+            </div>
+            <div className="tools__dropdown tools__btn">
+                <span className="tools__text">
+                    Move
+                </span>
+                <img 
+                    className="tools__icon"
+                    alt="tools-icon" 
+                    src={moveImg}
+                ></img>
+                <div className="tools__dropdown__content">
+                    <div 
+                        className="tools__btn"
+                        onClick={()=>{
+                            handleToolsAction('start-move-Vertex')
+                        }}
+                    >
+                        <span>Move a vertex</span>
+                    </div>
+                    <div 
+                        className="tools__btn"
+                        onClick={()=>{
+                            handleToolsAction('start-move-graph')
+                        }}
+                    >
+                        <span>Move graph</span>
+                    </div>
+                    
+                </div>
             </div>
             <div 
                 className={"tools__btn " + (action === 'adding-vertex' ? "is-active" : "")}
@@ -139,6 +169,14 @@ const Tools = ({handleToolsAction, action}) => {
                         }}
                     >
                        <span> Euler Trail</span>
+                    </div>
+                    <div 
+                        className="tools__btn"
+                        onClick={()=>{
+                            handleToolsAction('hamilton-trail')
+                        }}
+                    >
+                       <span> Hamilton Trail</span>
                     </div>
                 </div>
             </div>
