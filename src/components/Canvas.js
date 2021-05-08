@@ -171,11 +171,6 @@ const Canvas = ({matrix}) => {
                     onClick={handleClickOnCanvas}
                 >
                     {state.vertexList.map((item)=>{
-                        // let colorCode = {};
-                        // if(item.status.indexOf("CC") !== -1){
-
-                        // }
-
                         return   <div
                                     className={"vertex " + item.status}
                                     style={{

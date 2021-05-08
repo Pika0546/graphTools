@@ -1,5 +1,8 @@
 import React from 'react'
 import Footer from './Footer';
+import fb from '../img/facebook.png';
+import gh from '../img/github.png';
+import gm from '../img/gmail.png';
 const Contact = () => {
     return (
         <>
@@ -7,29 +10,29 @@ const Contact = () => {
                 <div className="contact__header">
                     <h1>Contact Us</h1>
                 </div>
-            
-                <form className="contact__form">
-                    <div className="contact__form__group">
-                        <label>Name: </label>
-                        <input type="text" name="name" placeholder="name" autoComplete="off"></input>
+                <div className="contact__content">
+                    <p>
+                        If you have any questions or suggestions please feel free to contact me with the information below. 
+                        <br></br>
+                        I would be very happy to receive your feedback and to answer all of your questions.
+                        
+                    </p>
+                   
+                    <div className="contact__social">
+                        <div className="contact__social__item">
+                            <img src={fb} alt="fb"></img>
+                            <a href="https://www.facebook.com/DangKhoaPika/">Đăng Khoa Pika</a>
+                        </div>
+                        <div className="contact__social__item">
+                            <img src={gh} alt="gh"></img>
+                            <a href="https://github.com/Pika0546">Pika0546</a>
+                        </div>
+                        <div className="contact__social__item">
+                            <img src={gm} alt="gm"></img>
+                            <span>dangkhoa.it.23@gmail.com</span>
+                        </div>
                     </div>
-                    <div className="contact__form__group">
-                        <label>Email: </label>
-                        <input type="text" name="email" placeholder="email"  autoComplete="off"></input>
-                    </div>
-                    <div className="contact__form__group">
-                        <label>Subject: </label>
-                        <input type="text" name="subject" placeholder="subject"  autoComplete="off"></input>
-                    </div>
-                    <div className="contact__form__group">
-                        <label>Message: </label>
-                        <textarea cols="40" rows="5"  autoComplete="off"></textarea>
-                    </div>
-                    <div className="contact__form__group">
-                    <button type="reset">Reset</button>
-                    <button type="submit">Send</button>
-                    </div>
-                </form>
+                </div>
             </div>
             <Footer></Footer>
         </>

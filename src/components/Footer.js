@@ -10,20 +10,16 @@ const Footer = () => {
                         <span> Graph Tools</span>
                     </div>
                     <p>&copy; Graph Tools is online project aimed at creation and easy visualization of graph and related algorithms.</p>
-                    <p>Create a graph: </p>
-                    <button>Adjency Matrix</button>
                     
-                    <button>Draw by hand</button>
 
                 </div>
-             
                 <div className="footer__right">
                    
                     <div className="footer__right__content">
-                        <p>View <span>Source Code</span></p>
-                        <p>Author: Le Tran Dang Khoa - Website: <span>Visit</span></p>
-                        <p>Adress: Dong Hoa, Di An, Binh Duong, Vietnam</p>
-                        <p>Phone: 0342897xxx - Email: dangkhoa.it.23@gmail.com</p>
+                        {/* <p>View <span>Source Code</span></p> */}
+                        <p>Author: Le Tran Dang Khoa - Website: <a href="https://pika0546.github.io/le-tran-dang-khoa">Visit</a></p>
+                        <p>Address: Dong Hoa, Di An, Binh Duong, Vietnam</p>
+                        <p>Phone: 0342897441- Email: dangkhoa.it.23@gmail.com</p>
                         <p>2021 - {new Date().getFullYear()} </p>
 
                     </div>

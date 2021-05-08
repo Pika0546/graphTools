@@ -6,7 +6,7 @@
     bottom: 0;
     width: 100%;
     left: 0;
-    @include respond(exml){
+    @include respond(ml){
         margin-top: 10px;
         position: relative;
     }
