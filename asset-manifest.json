@@ -1,15 +1,16 @@
 {
   "files": {
-    "main.css": "/graphTools/static/css/main.b3aa5b13.chunk.css",
-    "main.js": "/graphTools/static/js/main.f34ac507.chunk.js",
-    "main.js.map": "/graphTools/static/js/main.f34ac507.chunk.js.map",
+    "main.css": "/graphTools/static/css/main.5cf242d8.chunk.css",
+    "main.js": "/graphTools/static/js/main.dece13cb.chunk.js",
+    "main.js.map": "/graphTools/static/js/main.dece13cb.chunk.js.map",
     "runtime-main.js": "/graphTools/static/js/runtime-main.36db4e99.js",
     "runtime-main.js.map": "/graphTools/static/js/runtime-main.36db4e99.js.map",
     "static/js/2.f3859de4.chunk.js": "/graphTools/static/js/2.f3859de4.chunk.js",
     "static/js/2.f3859de4.chunk.js.map": "/graphTools/static/js/2.f3859de4.chunk.js.map",
     "index.html": "/graphTools/index.html",
-    "static/css/main.b3aa5b13.chunk.css.map": "/graphTools/static/css/main.b3aa5b13.chunk.css.map",
+    "static/css/main.5cf242d8.chunk.css.map": "/graphTools/static/css/main.5cf242d8.chunk.css.map",
     "static/js/2.f3859de4.chunk.js.LICENSE.txt": "/graphTools/static/js/2.f3859de4.chunk.js.LICENSE.txt",
+    "static/media/gmail.23d2a9b0.png": "/graphTools/static/media/gmail.23d2a9b0.png",
     "static/media/homeIcon1.038fa404.png": "/graphTools/static/media/homeIcon1.038fa404.png",
     "static/media/point.cd46e3f2.png": "/graphTools/static/media/point.cd46e3f2.png",
     "static/media/remove.8bb4523c.png": "/graphTools/static/media/remove.8bb4523c.png"
@@ -17,7 +18,7 @@
   "entrypoints": [
     "static/js/runtime-main.36db4e99.js",
     "static/js/2.f3859de4.chunk.js",
-    "static/css/main.b3aa5b13.chunk.css",
-    "static/js/main.f34ac507.chunk.js"
+    "static/css/main.5cf242d8.chunk.css",
+    "static/js/main.dece13cb.chunk.js"
   ]
 }
