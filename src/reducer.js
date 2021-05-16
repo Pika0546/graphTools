@@ -1,6 +1,11 @@
 // import { isCompositeComponentWithType } from "react-dom/cjs/react-dom-test-utils.development";
 
+import { queryByLabelText } from "@testing-library/dom";
+
 export const reducer = (state, action) => {
+
+    const vertexSize = 30;
+    const canvasSize = 8000;
 
     const copyObject = (object) => {
         let result = JSON.parse(JSON.stringify(object));
@@ -1027,17 +1032,17 @@ export const reducer = (state, action) => {
 
         for(let i = 0 ; i < size ; i++){
             for(let j = 0 ; j < size; j++){
-               if(!isWeight){
+               if(isWeight === 0){
                     if(tempMatrix[i][j] !== 0 && tempMatrix[i][j] !== 1){
                         isWeight = 1;
                     }
                }
-               if(!isDir){
+               if(isDir === 0){
                    if(tempMatrix[i][j] !== tempMatrix[j][i]){
                        isDir = 1;
                    }
                }
-               if(isDir && isWeight){
+               if(isDir === 1 && isWeight === 1){
                    break;
                }
             }
@@ -1059,19 +1064,20 @@ export const reducer = (state, action) => {
             }
         }
 
-        if(!isWeight){
-            for(let i = 0 ; i < 0 ; i++){
-                for(let j = 0 ; j < 0; j ++){
+        if(isWeight === 0){
+          
+            for(let i = 0 ; i < size ; i++){
+                for(let j = 0 ; j < size; j++){
                     if(tempMatrix[i][j] === 0){
                         tempMatrix[i][j] = Infinity;
                     }
-                    else if(tempMatrix[i][j] === 1){
+                    else if(tempMatrix[i][j] === 1){                     
                         tempMatrix[i][j] = 0;
                     }
                 }
             }
         }
-
+      
         return {
             ...state,
             matrix: tempMatrix,
@@ -1430,8 +1436,7 @@ export const reducer = (state, action) => {
         let src = state.tempEdge[0];
         let des = action.payload;
         let {resultPaths, resultMatrix} = floydWarshall(state.matrix, src.value, des.value);
-        // let tempVertexList = state.vertexList.slice(0);
-        // let tempEdgeList = state.edgeList.slice(0);
+      
         let [tempVertexList, tempEdgeList] = resetStatus();
         let vertexAmount = state.matrix.length;
         let resultPath = resultPaths[(src.value - 1)*vertexAmount + (des.value - 1)];
@@ -1891,5 +1896,182 @@ export const reducer = (state, action) => {
             instructionMess:"Your graph have Hamilton Path: " + path.join(", "),
         }
     }
+
+    if(action.type === "START_MOVE_VERTEX"){
+        let [tempVertexList, tempEdgeList] = resetStatus();
+        return{
+            ...state,
+            vertexList: tempVertexList,
+            edgeList: tempEdgeList,
+            tempEdge: [],
+            instructionMess:"Drag and drop any vertices that you want to move !",
+        }
+    }
+
+    if(action.type === "MOVE_VERTEX"){
+      
+        let {x, y, index} = action.payload;
+        
+        let [tempVertexList, tempEdgeList] = resetStatus();
+    
+        if(x >= vertexSize/2 && x <= canvasSize - vertexSize/2){
+            tempVertexList[index].x = x;
+        }
+        if(y >= vertexSize/2 && x <= canvasSize - vertexSize/2){
+            tempVertexList[index].y = y;
+        }
+        
+        tempEdgeList = tempEdgeList.filter((item)=>{
+            if(item.vertex1.value === tempVertexList[index].value ||item.vertex2.value === tempVertexList[index].value ){
+                return false;
+            }
+            return true;
+        })
+        
+        const n = state.matrix.length;
+        let value = tempVertexList[index].value; 
+        for(let i = 0 ; i < n; i++){
+            if(i + 1 !== value && state.matrix[value-1][i] !== 'x' && state.matrix[value-1][i] !== Infinity){
+                let index1 = findVertex(i + 1);
+                addEdge(tempVertexList[index],  tempVertexList[index1], tempEdgeList, state.isDirected, state.matrix[value - 1][i]);
+            }
+        }
+        for(let i = 0 ; i < n; i++){
+            if(i + 1 !== value && state.matrix[i][value-1] !== 'x' && state.matrix[i][value-1] !== Infinity){
+                let index1 = findVertex(i + 1);
+                addEdge(tempVertexList[index1],  tempVertexList[index], tempEdgeList, state.isDirected, state.matrix[i][value-1]);
+            }
+        }
+        return{
+            ...state,
+            vertexList: tempVertexList,
+            edgeList: tempEdgeList,
+
+            instructionMess:"Drag and drop any vertices that you want to move !",
+        }
+    }
+    if(action.type === "START_MOVE_GRAPH"){
+        resetStatus();
+        return{
+            ...state,
+            instructionMess:"Drag any vertex and move it to move your graph !",
+        }
+    }
+    if(action.type === "MOVE_GRAPH"){
+       
+        let {x, y, index} = action.payload;
+        
+        let [tempVertexList, tempEdgeList] = resetStatus();
+
+        let dentaX = x - tempVertexList[index].x ;
+        let dentaY =y - tempVertexList[index].y;
+     
+        const numberOfVertex = tempVertexList.length;
+        for(let i = 0; i < numberOfVertex;i++){
+            tempVertexList[i].x += dentaX;
+            tempVertexList[i].y += dentaY;
+        }
+        const numberOfEdge = tempEdgeList.length;
+        for(let i = 0 ; i < numberOfEdge; i++){
+            tempEdgeList[i].startX += dentaX;
+            tempEdgeList[i].startY += dentaY;
+        }
+        return{
+            ...state,
+            vertexList: tempVertexList,
+            edgeList: tempEdgeList,
+            instructionMess:"Drag any vertex and move it to move your graph !",
+        }
+    }
+
+    if(action.type === "START_MOVE_AREA"){
+        resetStatus();
+        return{
+            ...state,
+            selectedArea: {...state.selectedArea, isRenDer: true},
+            instructionMess:"Select an area, after that click on any vertex in that area to move the area",
+        }
+    }
+
+    if(action.type === "CLEAR_AREA"){
+        return{
+            ...state,
+            instructionMess: "",
+            selectedArea: {x: 0, y: 0, width: 0, height: 0, isRender: false}
+        }
+    }
+
+    if(action.type === "DRAW_SELECTED_AREA"){
+        let area = action.payload;
+        let tempVertexList = copyArray(state.vertexList);
+        const numberOfVertex = tempVertexList.length;
+        for(let i = 0 ; i < numberOfVertex; i++){
+            if(
+                tempVertexList[i].x <= area.x + area.width && tempVertexList[i].x >= area.x &&
+                tempVertexList[i].y <= area.y + area.height && tempVertexList[i].y >= area.y
+            ){
+                tempVertexList[i].status = 'is-in-select-to-move';
+            }
+            else{
+                tempVertexList[i].status = "";
+            }
+        }
+        return{
+            ...state,
+            vertexList: tempVertexList,
+            selectedArea: {...area, isRender: true}
+        }
+    }
+
+    if(action.type === "MOVE_AREA"){
+        let {x, y, index} = action.payload;
+    
+        let tempVertexList = copyArray(state.vertexList);
+        let tempEdgeList = copyArray(state.edgeList)
+        let dentaX = x - tempVertexList[index].x ;
+        let dentaY = y - tempVertexList[index].y;
+     
+        const numberOfVertex = tempVertexList.length;
+        for(let i = 0; i < numberOfVertex;i++){
+            if(tempVertexList[i].status === 'is-in-select-to-move'){
+                tempVertexList[i].x += dentaX;
+                tempVertexList[i].y += dentaY;
+            }
+        }
+        tempEdgeList = tempEdgeList.filter((item)=>{
+            for(let i = 0; i < numberOfVertex;i++){
+                if(tempVertexList[i].status === 'is-in-select-to-move'){
+                    if(item.vertex1.value === tempVertexList[i].value ||item.vertex2.value === tempVertexList[i].value ){
+                        return false;
+                    }
+                }
+            }
+            return true;
+        })
+
+        for(let value = 0; value < numberOfVertex;value++){
+            if(tempVertexList[value].status === 'is-in-select-to-move'){
+                for(let i = 0 ; i < numberOfVertex; i++){
+                    if(i !== tempVertexList[value].value - 1 && state.matrix[tempVertexList[value].value - 1][i] !== 'x' && state.matrix[tempVertexList[value].value - 1][i] !== Infinity){
+                        let index1 = findVertex(i + 1);
+                        addEdge(tempVertexList[value],  tempVertexList[index1], tempEdgeList, state.isDirected, state.matrix[tempVertexList[value].value - 1][i]);
+                    }
+                }
+                for(let i = 0 ; i < numberOfVertex; i++){
+                    if(i !== tempVertexList[value].value - 1 && state.matrix[i][tempVertexList[value].value - 1] !== 'x' && state.matrix[i][tempVertexList[value].value - 1] !== Infinity){
+                        let index1 = findVertex(i + 1);
+                        addEdge(tempVertexList[index1],  tempVertexList[value], tempEdgeList, state.isDirected, state.matrix[i][tempVertexList[value].value - 1]);
+                    }
+                }
+            }
+        }
+
+        return{
+            ...state,
+            vertexList: tempVertexList,
+            edgeList: tempEdgeList,
+        }
+    }
+
 	throw new Error('no matching action type');
 };

@@ -13,6 +13,15 @@ const defaultState = {
     tempEdge: [],
     isDirected: -1,
     openEdgeForm: false,
+    selectedArea: 
+        {
+            x: 0,
+            y: 0, 
+            width: 0, 
+            height: 0, 
+            isRender: false,
+            origin: ["top", "left"]
+        },
     instructionMess: "",
 }
 
@@ -24,6 +33,14 @@ const Canvas = ({matrix}) => {
 
     const [action, setAction] = useState("default");
     const [state, dispatch] = useReducer(reducer, defaultState)
+
+    const findVertex = (value, vertexList = state.vertexList) => {
+        let index = vertexList.findIndex((item) => {
+            return item.value === value;
+        })
+        return index;
+    }
+
 
     const handleToolsAction = (ac) =>{
         if(ac === 'removing-all'){
@@ -63,8 +80,18 @@ const Canvas = ({matrix}) => {
             }
             else if(ac === 'euler-trail'){
                 dispatch({type: 'EULER_TRAIL'});
-            }else if(ac === 'hamilton-trail'){
+            }
+            else if(ac === 'hamilton-trail'){
                 dispatch({type: 'HAMILTON_TRAIL'});
+            }
+            else if(ac === 'start-move-vertex'){
+                dispatch({type: 'START_MOVE_VERTEX'})
+            }
+            else if(ac === 'start-move-graph'){
+                dispatch({type: 'START_MOVE_GRAPH'})
+            }
+            else if(ac === 'start-move-area'){
+                dispatch({type: 'START_MOVE_AREA'})
             }
             setAction(ac);
             
@@ -84,6 +111,107 @@ const Canvas = ({matrix}) => {
         }
     },[matrix])
 
+    const closeDragElement = () => {
+		document.onmouseup = null;
+		document.onmousemove = null;
+       
+	}
+
+	function moveElement(e, index, mouse1X, mouse1Y) {
+		e = e || window.event;
+		e.preventDefault();
+		
+		// setState({x: e.clientX - mouse1X, y: e.clientY - mouse1Y, id: id})
+       
+        if(action === 'start-move-vertex')
+        {
+            dispatch({type: "MOVE_VERTEX", payload: {x: e.clientX - mouse1X, y: e.clientY - mouse1Y, index: index}})
+        }
+        else if (action === 'start-move-graph'){
+            dispatch({type: "MOVE_GRAPH", payload: {x: e.clientX - mouse1X, y: e.clientY - mouse1Y, index: index}})
+
+        }
+		
+	}
+
+    const moveArea = (e, index, mouse1X, mouse1Y) => {
+        dispatch({type: "MOVE_AREA", payload: {x: e.clientX - mouse1X, y: e.clientY - mouse1Y, index: index}})
+    }
+
+	const dragMouseDown = (e, id) => {
+		if(action === 'start-move-vertex' || action === 'start-move-graph'){
+           
+            e = e || window.event;
+            e.preventDefault();
+            let index = findVertex(id);
+           
+            let mouse1X = e.clientX - state.vertexList[index].x;
+            let mouse1Y = e.clientY - state.vertexList[index].y;
+          
+            document.onmouseup = (e) => {
+                closeDragElement(e);
+            }
+            document.onmousemove = (e) => {
+                moveElement(e, index, mouse1X, mouse1Y);
+            }
+        }
+        if(action === 'start-move-vertex-area'){
+            e = e || window.event;
+            e.preventDefault();
+            let index = findVertex(id);
+            let mouse1X = e.clientX - state.vertexList[index].x;
+            let mouse1Y = e.clientY - state.vertexList[index].y;
+            document.onmouseup = (e) => {
+                closeDragElement(e);
+            }
+            document.onmousemove = (e) => {
+                moveArea(e, index, mouse1X, mouse1Y);
+            }
+        }
+	}
+
+    const drawArea = (e, x, y, startX, startY) => {
+        e = e || window.event;
+		e.preventDefault();
+        let dentaX = e.clientX - startX;
+        let dentaY = e.clientY - startY;
+        let origin = ["top", "left"];
+        if(dentaX < 0){
+            origin[1] = "right";
+        }
+        if(dentaY < 0){
+            origin[0] = 'bottom';
+        }
+        dispatch({type: "DRAW_SELECTED_AREA", payload: {x: x, y: y, width: Math.abs(dentaX), height: Math.abs(dentaY), origin: origin}})
+
+    }
+
+    const closeDrawArea = (e) => {
+        dispatch({type: "CLEAR_AREA"});
+        setAction("start-move-vertex-area")
+        document.onmouseup = null;
+		document.onmousemove = null;
+    }
+
+    const startSelectArea = (e) => {
+        if(action === 'start-move-area'){
+            e = e || window.event;
+            e.preventDefault();
+            let myCanvas = document.getElementById("canvas");
+            let canvasRect = myCanvas.getBoundingClientRect();
+            let x = e.clientX - canvasRect.left;
+            let y = e.clientY - canvasRect.top;
+            let startX = e.clientX;
+            let startY = e.clientY
+            document.onmouseup = (e) => {
+                closeDrawArea(e);
+            }
+            document.onmousemove = (e) => {
+                drawArea(e, x, y, startX, startY);
+            }
+        }
+    }
+
     const handleClickOnCanvas = (event)=>{
         if(action === 'adding-vertex'){
             let x = event.clientX;
@@ -91,6 +219,7 @@ const Canvas = ({matrix}) => {
             let value = state.matrix.length + 1;
             dispatch({type: "ADD_VERTEX", payload: {x, y, value}})
         }
+        
     }
 
     const handleClickOnVertex = (vertex) =>{
@@ -151,6 +280,67 @@ const Canvas = ({matrix}) => {
         dispatch({type: "CLOSE_EDGE_FORM"});
     }
 
+    let selectedAreaEle = "";
+    if(state.selectedArea.isRender === true){
+        let bottom =  (8000 -  state.selectedArea.y);
+        let right =(8000 -  state.selectedArea.x);
+        if(state.selectedArea.origin[0] === 'top'){
+            if(state.selectedArea.origin[1] === 'left'){
+                selectedAreaEle =  <div 
+                                        className="selected-area"
+                                        style={{
+                                            top: state.selectedArea.y + 'px', 
+                                            left: state.selectedArea.x + 'px',
+                                            width: state.selectedArea.width + 'px',
+                                            height: state.selectedArea.height + 'px',
+                                            transformOrigin: "left top",
+                                        }}
+                                    ></div>
+            }
+            else{
+              
+                selectedAreaEle =  <div 
+                                        className="selected-area"
+                                        style={{
+                                            top: state.selectedArea.y + 'px', 
+                                            right: right + 'px',    
+                                            width: state.selectedArea.width + 'px',
+                                            height: state.selectedArea.height + 'px',
+                                            transformOrigin: "right top",
+                                        }}
+                                    ></div>
+            }
+        }
+        else{
+           
+            if(state.selectedArea.origin[1] === 'left'){
+                selectedAreaEle =  <div 
+                                        className="selected-area"
+                                        style={{
+                                            bottom: bottom + 'px', 
+                                            left: state.selectedArea.x + 'px',
+                                            width: state.selectedArea.width + 'px',
+                                            height: state.selectedArea.height + 'px',
+                                            transformOrigin: "left bottom",
+                                        }}
+                                    ></div>
+            }
+            else{
+                
+                selectedAreaEle =  <div 
+                                        className="selected-area"
+                                        style={{
+                                            bottom: bottom + 'px', 
+                                            right: right + 'px',
+                                            width: state.selectedArea.width + 'px',
+                                            height: state.selectedArea.height + 'px',
+                                            transformOrigin: "right bottom",
+                                        }}
+                                    ></div>
+            }
+        }
+    }
+    
     return (
         <section className="main">
             <Tools handleToolsAction={handleToolsAction} action={action}></Tools>
@@ -169,6 +359,7 @@ const Canvas = ({matrix}) => {
                     className="canvas__area"
                     id="canvas"
                     onClick={handleClickOnCanvas}
+                    onMouseDown={startSelectArea}
                 >
                     {state.vertexList.map((item)=>{
                         return   <div
@@ -180,6 +371,9 @@ const Canvas = ({matrix}) => {
                                     key={item.value}
                                     onClick={()=>{
                                         handleClickOnVertex(item)
+                                    }}
+                                    onMouseDown={(e)=>{
+                                        dragMouseDown(e, item.value);
                                     }}
                                    
                                 >
@@ -222,6 +416,9 @@ const Canvas = ({matrix}) => {
                                   {item.weight !== 0 ? <span>{item.weight} </span>: ""}
                                 </div>
                     })}
+                    {state.selectedArea.isRender === true ? 
+                       selectedAreaEle : ""
+                    }
                 </div>
             </section>
             

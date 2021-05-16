@@ -84,6 +84,17 @@
     cursor: default;
 }
 
+.canvas.is-start-move-vertex .vertex{
+    cursor: move;
+}
+
+.canvas.is-start-move-graph .vertex{
+    cursor: move;
+}
+
+.canvas.is-start-move-vertex-area .vertex{
+    cursor: move;
+}
 /* ===================== VERTEX ==================*/
 .vertex{
     display: flex;
@@ -98,13 +109,17 @@
     position: absolute;
     font-family: 'Fredoka One', cursive;
     // box-shadow: 0 5px 5px rgba(87, 87, 87, 0.4);
-    transition: .2s;
+    transition:  background-color .2s ;
     &:hover{
         background-color: rgb(255, 0, 85);
     }
 }
 
 .vertex.is-selecting{
+    background-color: orchid;
+}
+
+.vertex.is-in-select-to-move{
     background-color: orchid;
 }
 
@@ -216,4 +231,9 @@
     span{
         color: $edge-other;
     }
+}
+
+.selected-area{
+    position: absolute;
+    background: $glass-bg;
 }

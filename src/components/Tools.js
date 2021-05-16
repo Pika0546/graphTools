@@ -36,10 +36,18 @@ const Tools = ({handleToolsAction, action}) => {
                     <div 
                         className="tools__btn"
                         onClick={()=>{
-                            handleToolsAction('start-move-Vertex')
+                            handleToolsAction('start-move-vertex')
                         }}
                     >
                         <span>Move a vertex</span>
+                    </div>
+                    <div 
+                        className="tools__btn"
+                        onClick={()=>{
+                            handleToolsAction('start-move-area')
+                        }}
+                    >
+                        <span>Move an area</span>
                     </div>
                     <div 
                         className="tools__btn"
