@@ -16,14 +16,14 @@ const Tools = ({handleToolsAction, action}) => {
                     handleToolsAction('default')
                 }}
             >
-                <span className="tools__text">Default</span>
+                <span className="tools__text">Select</span>
                 <img 
                     className="tools__icon"
                     alt="tools-icon" 
                     src={defaultImg}
                 ></img>
             </div>
-            <div className="tools__dropdown tools__btn">
+            {/* <div className="tools__dropdown tools__btn">
                 <span className="tools__text">
                     Move
                 </span>
@@ -59,7 +59,7 @@ const Tools = ({handleToolsAction, action}) => {
                     </div>
                     
                 </div>
-            </div>
+            </div> */}
             <div 
                 className={"tools__btn " + (action === 'adding-vertex' ? "is-active" : "")}
                 onClick={()=>{

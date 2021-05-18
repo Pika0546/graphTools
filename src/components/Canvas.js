@@ -120,18 +120,7 @@ const Canvas = ({matrix}) => {
 	function moveElement(e, index, mouse1X, mouse1Y) {
 		e = e || window.event;
 		e.preventDefault();
-		
-		// setState({x: e.clientX - mouse1X, y: e.clientY - mouse1Y, id: id})
-       
-        if(action === 'start-move-vertex')
-        {
-            dispatch({type: "MOVE_VERTEX", payload: {x: e.clientX - mouse1X, y: e.clientY - mouse1Y, index: index}})
-        }
-        else if (action === 'start-move-graph'){
-            dispatch({type: "MOVE_GRAPH", payload: {x: e.clientX - mouse1X, y: e.clientY - mouse1Y, index: index}})
-
-        }
-		
+        dispatch({type: "MOVE_VERTEX", payload: {x: e.clientX - mouse1X, y: e.clientY - mouse1Y, index: index}});
 	}
 
     const moveArea = (e, index, mouse1X, mouse1Y) => {
@@ -139,35 +128,31 @@ const Canvas = ({matrix}) => {
     }
 
 	const dragMouseDown = (e, id) => {
-		if(action === 'start-move-vertex' || action === 'start-move-graph'){
-           
+        if(action === "default"){
+            console.log('child');
             e = e || window.event;
+            e.stopPropagation()
             e.preventDefault();
             let index = findVertex(id);
-           
+            
             let mouse1X = e.clientX - state.vertexList[index].x;
             let mouse1Y = e.clientY - state.vertexList[index].y;
-          
+            
             document.onmouseup = (e) => {
                 closeDragElement(e);
             }
-            document.onmousemove = (e) => {
-                moveElement(e, index, mouse1X, mouse1Y);
+            if(state.vertexList[index].status === 'is-in-select-to-move'){
+                document.onmousemove = (e) => {
+                    moveArea(e, index, mouse1X, mouse1Y);
+                }
             }
+            else{
+                document.onmousemove = (e) => {
+                    moveElement(e, index, mouse1X, mouse1Y);
+                }
+            }    
         }
-        if(action === 'start-move-vertex-area'){
-            e = e || window.event;
-            e.preventDefault();
-            let index = findVertex(id);
-            let mouse1X = e.clientX - state.vertexList[index].x;
-            let mouse1Y = e.clientY - state.vertexList[index].y;
-            document.onmouseup = (e) => {
-                closeDragElement(e);
-            }
-            document.onmousemove = (e) => {
-                moveArea(e, index, mouse1X, mouse1Y);
-            }
-        }
+	
 	}
 
     const drawArea = (e, x, y, startX, startY) => {
@@ -187,14 +172,24 @@ const Canvas = ({matrix}) => {
     }
 
     const closeDrawArea = (e) => {
+        // console.log(state.selectedArea);
+        // let width = state.selectedArea.width;
+        // let height = state.selectedArea.height;
+        // console.log(width, height);
+        // if(width === 0 && height === 0){
+        //     dispatch({type: "CLEAR_TEMP"});
+        // }else{
+        //     dispatch({type: "CLEAR_AREA"});
+        // }
         dispatch({type: "CLEAR_AREA"});
-        setAction("start-move-vertex-area")
+        // setAction("start-move-vertex-area")
         document.onmouseup = null;
 		document.onmousemove = null;
     }
 
     const startSelectArea = (e) => {
-        if(action === 'start-move-area'){
+        if(action === 'default'){
+            console.log('parent');
             e = e || window.event;
             e.preventDefault();
             let myCanvas = document.getElementById("canvas");
@@ -210,14 +205,17 @@ const Canvas = ({matrix}) => {
                 drawArea(e, x, y, startX, startY);
             }
         }
+        
     }
 
     const handleClickOnCanvas = (event)=>{
+        
         if(action === 'adding-vertex'){
             let x = event.clientX;
             let y = event.clientY;
             let value = state.matrix.length + 1;
             dispatch({type: "ADD_VERTEX", payload: {x, y, value}})
+           
         }
         
     }
