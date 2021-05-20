@@ -120,7 +120,7 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
                     </div>
                     <div className={ myState.openI ?  "matrix-form__text open" :"matrix-form__text " }>
                         <p>
-                            Enter the adjacency matrix of the graph as follows:<br></br>
+                            Enter the matrix of the graph as follow:<br></br>
                             - For unweighted matrices: <br></br>
                             + Type 0 if there is no edge between two vertices. <br></br>
                             + Type 1 if there is a edge between two vertices. <br></br>
@@ -130,8 +130,8 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
                                 <span>0</span> <span>0</span> <span>1</span>
                                 <span>1</span> <span>1</span> <span>0</span> 
                             </span>
-                            - For the weighted matrix: <br></br>
-                            + Type "Inf" if there is no edge between two vertices. <br></br>
+                            - For the weighted matrices: <br></br>
+                            + Type "Inf" or "inf" if there is no edge between two vertices. <br></br>
                             + Type the weight of the edge if otherwise.<br></br>
                             + Example: <br></br>
                             <span className="instruction-matrix">

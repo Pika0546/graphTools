@@ -7,6 +7,41 @@ export const reducer = (state, action) => {
     const vertexSize = 30;
     const canvasSize = 8000;
 
+    const insertionSort = (inputArr) => {
+        let n = inputArr.length;
+            for (let i = 1; i < n; i++) {
+                // Choosing the first element in our unsorted subarray
+                let current = inputArr[i];
+                // The last element of our sorted subarray
+                let j = i-1; 
+                while ((j > -1) && (current < inputArr[j])) {
+                    inputArr[j+1] = inputArr[j];
+                    j--;
+                }
+                inputArr[j+1] = current;
+            }
+        return inputArr;
+    }
+
+    const sortForMDST = (edges, matrix) => {
+        const n = edges.length;
+        for(let i = 0 ; i < n ; i++){
+            const tempSize = edges[i].length;
+            for(let j = 1; j < tempSize; j++){
+                let current = edges[i][j];
+               
+
+                let k = j - 1;
+                while(k > -1 && matrix[current][i] < matrix[edges[i][k]][i]){
+               
+                    edges[i][k + 1] = edges[i][k];
+                    k--;
+                }
+                edges[i][k + 1] = current;
+            }
+        }
+    }
+
     const copyObject = (object) => {
         let result = JSON.parse(JSON.stringify(object));
         return result;
@@ -339,12 +374,14 @@ export const reducer = (state, action) => {
         const n = matrix.length;
         stack.push(src);
         let resultEdges = [];
-        while(stack.length !== 0){
+        while(stack.length !== 0){  
+
             let s = stack.pop();
+          
             if(!visited[s]){
                 const n = resultVertices.length;
                 for(let i = n-1 ; i >= 0 ; i--){
-                    if(matrix[resultVertices[i]][s] !== Infinity && resultVertices[i] !== s){
+                    if(matrix[resultVertices[i]][s] !== Infinity && resultVertices[i] !== s && matrix[resultVertices[i]][s] !== 'x'){
                         resultEdges.push([resultVertices[i],s]);
                         break;
                     }
@@ -353,6 +390,7 @@ export const reducer = (state, action) => {
                 visited[s] = true;
             }
             for(let i = 0 ; i < n ; i++){
+               
                 if(matrix[s][i] !== Infinity && matrix[s][i]!== 'x' && !visited[i]){
                     stack.push(i);
                 }
@@ -480,7 +518,7 @@ export const reducer = (state, action) => {
         }
 
         for(let i = 0 ; i < n ; i++){
-            if(visited[i] === false){
+            if(visited[i] === false && matrix[i][i] !== 'x'){
                 DFSForSCC(matrix, visited, i, stack);
             }
         }
@@ -551,9 +589,110 @@ export const reducer = (state, action) => {
         return parent;
     }
 
+    const fixLabel = (label, x, y) => {
+        let min = (label[x] < label[y]) ? label[x] : label[y];
+        let max = (label[x] > label[y]) ? label[x] : label[y];
+        const n = label.length;
+        for(let i = 0 ; i < n ;i++){
+            if(label[i] === max){
+                label[i] = min;
+            }
+        }
+    }
+
+    let label = [];
+    let resultMDST = [];
+    let countMDST = 0;
+    let visitedMDST = [];
+    const kruskalForDirectedRecur = (edges, x, y, matrix) => {
+        const n = edges.length;
+        
+        resultMDST[x][y] = true;
+        visitedMDST[y] = true;
+        countMDST += 1;
+        let labelClone = copyArray(label);
+        fixLabel(label, x, y);
+        if(countMDST === state.vertexList.length - 1){
+            return true;
+        }
+        let nextVertex = 0;
+        while(nextVertex < n && (nextVertex === y || edges[nextVertex].length === 0 || visitedMDST[nextVertex] === true)){
+            nextVertex += 1;
+        }
+        if(nextVertex >= n){
+            return false;
+        }
+        let tempSize = edges[nextVertex].length;
+        
+        for(let i = 0 ; i < tempSize; i++){
+            let newY = nextVertex;
+            let newX = edges[nextVertex][i];
+            if(label[newX] !== label[newY]){
+                if(kruskalForDirectedRecur(edges, newX, newY, matrix)){
+                    return true;
+                }
+            }
+        }
+        countMDST--;
+        resultMDST[x][y] = false;
+        visitedMDST[y] = false;
+        label = copyArray(labelClone);
+        return false;
+    }
+
+    const kruskalForDirected = (matrix, root) => {
+        const n = matrix.length;
+        resultMDST = copyMatrix(matrix);
+        label = [];
+        countMDST = 0;
+        
+        let edges = [];
+        for(let i = 0 ; i < n ; i++){
+            edges.push([]);
+            label.push(i); 
+            for(let j = 0 ; j < n;j++){
+                resultMDST[i][j] = false;
+            }
+            visitedMDST[i] = false;
+        }
+    
+        for(let i = 0 ; i < n ;i++){
+            if(i!==root && matrix[i][i] !== 'x'){
+                let temp = [];
+                for(let j = 0 ; j < n ; j++){
+                    if( j !== i && matrix[i][j] !== 'x'){
+                        if(matrix[j][i] !== Infinity){
+                            temp.push(j);
+                        }
+                    }
+                }
+                edges[i] = temp;
+            }
+        }
+      
+        sortForMDST(edges, matrix);
+        let y = 0;
+        
+        for(let i = 0 ; i < n ;i++){
+            if(edges[i].length !== 0){
+                y = i;
+                break;
+            }
+        }
+        for(let i = 0 ; i < edges[y].length; i++){
+            let x = edges[y][i];
+            if(kruskalForDirectedRecur(edges, x, y, matrix)){
+                break;
+            }
+        }
+       
+        return copyMatrix(resultMDST);
+    }
+
     const findMotherVertex = (matrix) => {
         let numberOfVertex = matrix.length;
         let visited = [];
+        let result = [];
         for(let i = 0 ; i < numberOfVertex ; i++){
             visited.push(false);
         }
@@ -569,7 +708,6 @@ export const reducer = (state, action) => {
                 if(!visited[i]){
                     DFSUtil(matrix, i, visited);
                 }
-
                 for(let j = 0 ; j < numberOfVertex ; j++){
                     if(matrix[j][j] !== 'x'){
                         if(!visited[j]){
@@ -577,54 +715,14 @@ export const reducer = (state, action) => {
                             break;
                         }
                     }
-                    
                 }
                 if(flag){
-                    return i;
+                    result.push(i);
                 }
             }
             
         }
-        return -1;
-    }
-
-    const chuliuEdmonds = (vertices, matrix, root) => {
-        const n = matrix.length;
-        const numberOfVertex = vertices.length;
-        let minSrc = [];
-        for(let i = 0 ; i < n; i++){
-            minSrc.push(-1);
-        }
-        for(let i = 0 ; i < numberOfVertex; i++){
-            if(vertices[i]!== root){
-                let min = Infinity;
-                for(let j = 0 ; j < numberOfVertex; j++){
-                    if(vertices[i]!== vertices[j]){
-                        if(matrix[vertices[j]][vertices[i]] < min){
-                            min = matrix[vertices[j]][vertices[i]];
-                            minSrc[vertices[i]] = vertices[j];
-                        }
-                    }
-                }
-            }
-        }
-        console.log(minSrc);
-        let minMatrix = copyMatrix(matrix);
-        for(let i = 0 ; i < n ;i++){
-            for(let j = 0 ; j < n;j++){
-                if( i!== j && minMatrix[i][j] !== 'x'){
-                    minMatrix[i][j] = Infinity;
-                }
-            }
-        }
-
-        for(let i = 0 ; i < numberOfVertex; i++){
-            if(vertices[i]!== root){
-                minMatrix[minSrc[vertices[i]]][vertices[i]] = matrix[minSrc[vertices[i]]][vertices[i]];
-            }
-
-        }
-        console.log(minMatrix);
+        return result;
     }
 
     const getUndirectedGraph = (matrix) => {
@@ -828,8 +926,6 @@ export const reducer = (state, action) => {
     }
 
     const fleuryRecur = (matrix, vertex, result, flag) => {
-       
-  
         if(flag[0]){
             const n = matrix.length;
             
@@ -1100,7 +1196,7 @@ export const reducer = (state, action) => {
 
     if(action.type === 'DRAW_FULL_GRAPH'){
 
-        let tempMatrix = action.payload;
+        let tempMatrix = copyMatrix(action.payload);
         const denta =25;
         const size = tempMatrix.length;
         const startVertexX0 = denta*size + 30;
@@ -1265,7 +1361,7 @@ export const reducer = (state, action) => {
                 tempEdge: [],
             }
         }
-        let temp = state.matrix.slice(0);
+        let temp = copyMatrix(state.matrix);
         let tempRow = [];
         for(let i = 0 ; i < value - 1 ; i++){
             tempRow.push(Infinity);
@@ -1275,11 +1371,11 @@ export const reducer = (state, action) => {
             temp[i] = [...temp[i], Infinity];
         }
         let n = temp.length;
-        for(let i = 0 ; i < n; i++ ){
-            for(let j = 0 ; j < n ; j ++){
-                if(i === j){
-                    temp[i][j] = 0;
-                }
+        temp[value - 1][value - 1] = 0;
+        for(let i = 0 ; i < n - 1 ; i++){
+            if(state.matrix[i][i] === 'x'){
+                temp[value - 1][i] = 'x';
+                temp[i][value - 1] = 'x';
             }
         }
 
@@ -1371,8 +1467,7 @@ export const reducer = (state, action) => {
             //Thêm mới
             let [length, angle] = calculateEdgeProp(vertex1, vertex2);
             let tempMatrix = state.matrix.slice(0);
-         
-            tempMatrix[findVertex(vertex1.value)][findVertex(vertex2.value)] = weight;
+            tempMatrix[vertex1.value-1][vertex2.value-1] = weight;
             
             let startX = vertex1.x;
             let startY = vertex1.y;
@@ -1382,7 +1477,7 @@ export const reducer = (state, action) => {
             }
             
             if(dir === 0){
-                tempMatrix[findVertex(vertex2.value)][findVertex(vertex1.value)] = weight;
+                tempMatrix[vertex2.value-1][vertex1.value-1] = weight;
             }
             else{
                 let otherEdgeIndex = isInEdgeList(vertex2, vertex1, dir, state.edgeList);
@@ -1643,8 +1738,9 @@ export const reducer = (state, action) => {
         }else{
            
             
-            let root = findMotherVertex(state.matrix);
-            if(root === -1){
+            let roots = findMotherVertex(state.matrix);
+            let numberOfRoot = roots.length;
+            if(numberOfRoot === 0){
                 return { 
                     ...state, 
                     vertexList: tempVertexList,
@@ -1653,17 +1749,52 @@ export const reducer = (state, action) => {
                     instructionMess:"Your graph does not have any Directed Spanning Tree."
                 };
             }
-            let vertexValueList = tempVertexList.map((vertex, index)=>{
-                return vertex.value - 1;
-            })
-
-            chuliuEdmonds(vertexValueList, state.matrix, root);
+            let matrix = copyMatrix(state.matrix);
+            let n = matrix.length;
+            
+            let resultMatrix = [];
+            let minW = Infinity;
+            // resultMatrix = kruskalForDirected(matrix, roots[4]);
+            for(let i = 0 ; i < numberOfRoot; i++){
+                let tempResult = kruskalForDirected(matrix, roots[i]);
+                let tempW = 0;
+                for(let j = 0; j < n ; j++){
+                    for(let k = 0 ; k < n ;k++){
+                        if(tempResult[j][k] === true){
+                            tempW += matrix[j][k];
+                        }
+                    }
+                }
+                if(tempW < minW){
+                    minW = tempW;
+                    resultMatrix = copyMatrix(tempResult);
+                }
+            }
+            n = resultMatrix.length;
+            
+            for(let i = 0 ; i < n ; i++){
+                if(matrix[i][i] !== 'x'){
+                    for(let j = 0 ; j < n ; j++){
+                        if( i!== j && matrix[j][j] !== 'x'){
+                            if(resultMatrix[i][j] === true){
+                                let index = findVertex(i + 1);
+                                tempVertexList[index].status = 'is-in-MST';
+                                index = findVertex(j + 1);
+                                tempVertexList[index].status = 'is-in-MST';
+                                index = findEdge(i + 1, j + 1, tempEdgeList);
+                                tempEdgeList[index].status = 'is-in-MST';
+                            }
+                        }
+                        
+                    }
+                }
+            }
             return { 
                 ...state, 
                 vertexList: tempVertexList,
                 edgeList: tempEdgeList,
                 tempEdge: [],
-                instructionMess:"Sorry, I haven't made an algorithm for finding MST of a directed graph yet."
+                instructionMess:"Minimum Directed Spanning Tree Weight: " + minW,
             };
         }
 		
@@ -1818,10 +1949,12 @@ export const reducer = (state, action) => {
             let tempString = <span key="-1" >Amount of {state.isDirected === 1 ? "Strongly" : ""} Connected Component:  {resultVerticesSize} <br></br> </span>;
             resultList.push(tempString);
             let color = 0;
+    
             resultVertices.forEach((item)=>{
                 const n = item.length;
                 let temp = item.join(" ");
                 resultList.push(<span key={temp}>Component: {temp} <br></br></span>);
+                
                 
                 for(let i = 0 ; i < n; i++){
                     tempVertexList[findVertex(item[i])].status = "is-in-CC-" + color%10; 
@@ -1851,17 +1984,17 @@ export const reducer = (state, action) => {
         for(let i = 0 ; i < n ; i++){
             let temp = []
             for(let j = 0 ; j < n; j++){
-                temp.push(<td>{matrix[i][j]}</td>);
+                temp.push(<td key = {"0" + i + j}>{matrix[i][j]}</td>);
                
             }
-            displayMatrix.push(<tr>{temp}</tr>);
+            displayMatrix.push(<tr key = {i}>{temp}</tr>);
             
         }
         return {
             ...state,
             vertexList: tempVertexList,
             edgeList: tempEdgesList,
-            instructionMess:<table className="matrix">{displayMatrix}</table>
+            instructionMess:<table className="matrix"> <tbody>{displayMatrix}</tbody></table>
         }
     }
 
@@ -2034,8 +2167,6 @@ export const reducer = (state, action) => {
             instructionMess:"Your graph have Hamilton Path: " + path.join(", "),
         }
     }
-
-
 
     if(action.type === "MOVE_VERTEX"){
       

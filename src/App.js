@@ -32,7 +32,7 @@ const App = () => {
     }
 
     useEffect(() => {
-        if(userOption === ''){
+        if(userOption === '' || userOption === 2){
             setMatrix([]);
         }
     }, [userOption])
@@ -43,6 +43,9 @@ const App = () => {
             {/* <ResponMenu></ResponMenu> */}
             {userOption==='' ? 
                 <Intro getUserOption={getUserOption}></Intro>:""
+            }
+             {userOption === 2 ?
+                    <Contact></Contact> : ""
             }
             
         
@@ -59,10 +62,7 @@ const App = () => {
                 : ""
             }
 
-            {userOption === 2 ?
-                    <Contact></Contact> : ""
-            }
-            
+           
         </div>  
     )
 }
