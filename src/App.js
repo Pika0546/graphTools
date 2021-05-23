@@ -1,8 +1,8 @@
 import React from 'react'
 
 /* ======== Router ======== */
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-
+// import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 /* ======== Component ========*/ 
 import Intro from './components/Intro';
 import Navbar from './components/Navbar';
@@ -41,7 +41,7 @@ const App = () => {
     
     return (
         <div className="container">
-            <Router>
+            <HashRouter basename='/'>
                 <Navbar/>
                 <Switch>
                     <Route exact path='/'>
@@ -57,7 +57,7 @@ const App = () => {
                         <Error />
                     </Route>
                 </Switch>
-            </Router>
+            </HashRouter>
         </div>  
     )
 }
