@@ -1,5 +1,8 @@
 import React from 'react'
 import Footer from './Footer';
+import fb from '../img/facebook.png';
+import gh from '../img/github.png';
+import gm from '../img/gmail.png';
 const Contact = () => {
     return (
         <>
@@ -17,15 +20,15 @@ const Contact = () => {
                    
                     <div className="contact__social">
                         <div className="contact__social__item">
-                            <i className="fab fa-facebook-square icon fb"></i>
+                            <img src={fb} alt="fb"></img>
                             <a href="https://www.facebook.com/DangKhoaPika/">Đăng Khoa Pika</a>
                         </div>
                         <div className="contact__social__item">
-                            <i className="fab fa-github-square icon gh"></i>
+                            <img src={gh} alt="gh"></img>
                             <a href="https://github.com/Pika0546">Pika0546</a>
                         </div>
                         <div className="contact__social__item">
-                            <i className="far fa-envelope icon gm"></i>
+                            <img src={gm} alt="gm"></img>
                             <span>dangkhoa.it.23@gmail.com</span>
                         </div>
                     </div>

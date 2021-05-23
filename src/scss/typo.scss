@@ -25,12 +25,15 @@
         }
     }
     &__list{
+        a{
+            text-decoration: none;
+        }
         &__item{
             font-family: 'Fredoka One', cursive;
-            color: rgb(204, 204, 204);
             font-size: 20px;
-            
             transition: .15s;
+            text-decoration: none;
+            color: rgb(204, 204, 204);
             &:hover{
                 color: white;
                 background-color: $glass-bg;
@@ -71,6 +74,7 @@
         &__buttons{
             button{
                 color: white;
+                text-decoration: none;
                 font-family: 'Fredoka One', cursive;
                 font-size: 20px;
                 @include respond(exml){
@@ -174,6 +178,7 @@
                 font-size: 30px;
             }
             color: white;
+            text-decoration: none;
             text-align: center;
             transition: .3s;
             font-family: 'Fredoka One', cursive;
@@ -352,5 +357,34 @@
             }
         }
         
+    }
+}
+
+
+/* =================== 404 ================*/
+.error{
+    h3{
+        color: #fff;
+        font-size: 60px;
+        font-family: 'Fredoka One', cursive;
+        font-weight: 200;
+        @include respond(exml){
+            font-size: 54px;
+        }
+    }
+   
+    p{
+        color: #fff;
+        padding: 20px;
+        padding-top: 0;
+        font-size: 18px;
+        line-height: 28px;
+    }
+    button{
+        border: 1px solid white;
+        padding: 20px;
+        font-size: 18px;
+        color: white;
+        font-family: 'Fredoka One', cursive;
     }
 }

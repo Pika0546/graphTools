@@ -3,9 +3,9 @@
     display: grid;
    
     grid-template-columns: repeat(6, 1fr);
-    // @include respond(exml){
-    //     grid-template-columns: repeat(3, 1fr);
-    // }
+    @include respond(exml){
+        grid-template-columns: repeat(3, 1fr);
+    }
     &__btn{
         cursor: pointer;
         background-color: $glass-bg;
@@ -15,20 +15,6 @@
         &:hover{
             background-color: $glass-bg-hover;
         }
-    }
-    &__text{
-       @include respond(exml){
-            display: none;
-       }
-    }
-    &__icon{
-        width: 22px;
-        height: auto;
-        display: none;
-        margin: 0 auto;
-        @include respond(exml){
-            display: block;
-       }
     }
     &__btn.is-active{
         background-color: $glass-bg-hover;

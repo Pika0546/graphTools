@@ -1,5 +1,5 @@
 import React from 'react'
-import homeIcon from '../img/home.png';
+import homeIcon from '../img/homeIcon1.png'
 const Footer = () => {
     return (
         <div className="footer">

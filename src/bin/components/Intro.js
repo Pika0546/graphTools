@@ -1,9 +1,6 @@
 import React from 'react'
-import homeIcon from '../img/home.png'
-
-import { Link } from 'react-router-dom';
-
-const Intro = () => {
+import homeIcon from '../img/homeIcon1.png'
+const Intro = ({getUserOption}) => {
     return (
         <section className="intro">
             <div className="intro__content">
@@ -22,16 +19,23 @@ const Intro = () => {
                 </p>
                 <p  className="intro__paragraph">Create a graph now !</p>
                 <div className="intro__content__buttons">
-                    <Link to='/main/1'>
-                        <button className="btn">
-                            Create by Matrix
-                        </button>
-                    </Link>
-                    <Link to='/main/0'> 
-                        <button className="btn">
-                            Draw by Hand
-                        </button>
-                    </Link>
+                    <button 
+                        className="btn"
+                        onClick={()=>{
+                            getUserOption(1)
+                        }}
+                    >
+                        Adjacency Matrix
+                    </button>
+                  
+                    <button 
+                        className="btn"
+                        onClick={()=>{
+                            getUserOption(0)
+                        }}
+                    >
+                        Draw by Hand
+                    </button>
                 </div>
             </div>
         </section>

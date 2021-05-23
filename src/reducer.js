@@ -1,27 +1,12 @@
 // import { isCompositeComponentWithType } from "react-dom/cjs/react-dom-test-utils.development";
 
-import { queryByLabelText } from "@testing-library/dom";
+// import { queryByLabelText } from "@testing-library/dom";
 
 export const reducer = (state, action) => {
 
     const vertexSize = 30;
     const canvasSize = 8000;
 
-    const insertionSort = (inputArr) => {
-        let n = inputArr.length;
-            for (let i = 1; i < n; i++) {
-                // Choosing the first element in our unsorted subarray
-                let current = inputArr[i];
-                // The last element of our sorted subarray
-                let j = i-1; 
-                while ((j > -1) && (current < inputArr[j])) {
-                    inputArr[j+1] = inputArr[j];
-                    j--;
-                }
-                inputArr[j+1] = current;
-            }
-        return inputArr;
-    }
 
     const sortForMDST = (edges, matrix) => {
         const n = edges.length;
@@ -86,24 +71,6 @@ export const reducer = (state, action) => {
         }
       
         return [tempVertexList,tempEdgeList];
-    }
-
-    const clearBeforeChangeAction = () => {
-        let tempVertexList = copyArray(state.vertexList);
-        let tempEdgeList = copyArray(state.edgeList);
-        let n = tempVertexList.length;
-        for(let i = 0 ; i < n ; i++){
-            if(tempVertexList[i].status !== ""){
-                tempVertexList[i].status = '';
-            }
-        }
-        n = tempEdgeList.length;
-        for(let i = 0 ; i < n ; i++){
-            if(tempEdgeList[i].status !== ""){
-                tempEdgeList[i].status = '';
-            }
-        }
-      
     }
 
     const isInList = (item, array) => {
@@ -389,7 +356,7 @@ export const reducer = (state, action) => {
                 resultVertices.push(s);
                 visited[s] = true;
             }
-            for(let i = 0 ; i < n ; i++){
+            for(let i = n - 1 ; i>=0 ; i--){
                
                 if(matrix[s][i] !== Infinity && matrix[s][i]!== 'x' && !visited[i]){
                     stack.push(i);
@@ -1312,12 +1279,12 @@ export const reducer = (state, action) => {
     }
 
 	if (action.type === 'DEFAULT') {
-        let [tempVertexList, tempEdgeList] = resetStatus();
+        // let [tempVertexList, tempEdgeList] = resetStatus();
       
 		return {
             ...state,
-            vertexList:tempVertexList,
-            edgeList:tempEdgeList,
+            // vertexList:tempVertexList,
+            // edgeList:tempEdgeList,
             tempEdge: [],
             instructionMess: "",
         }
@@ -1519,8 +1486,6 @@ export const reducer = (state, action) => {
                             tempEdgeList[otherEdgeIndex].startY = tempY + dentaY + dentaY;
                         }
                     }
-                    // anotherObject.startY = tempEdgeList[otherEdgeIndex].startY;
-                    // tempEdgeList[otherEdgeIndex] =  JSON.parse(JSON.stringify(anotherObject));
                 }
             }
            
@@ -1653,7 +1618,6 @@ export const reducer = (state, action) => {
         let resultPathList = resultPaths.map((item, index)=>{
             let i = Math.floor(index/vertexAmount);
             let j = index%vertexAmount;
-         
             if(state.matrix[i][j] !== "x"){
                 if(item.length === 0){
                     return <span key={index}>Shortest path from {i + 1} to {j + 1}: Not Exist <br></br></span>
@@ -1662,6 +1626,7 @@ export const reducer = (state, action) => {
                     return <span key={index}>Shortest path from {i+ 1} to {j + 1}: {path}, Weight: {resultMatrix[i][j]} <br></br></span>
                 }
             }
+            return "";
 
         })
         return{
@@ -1689,6 +1654,15 @@ export const reducer = (state, action) => {
 
     if(action.type === 'START_FIND_MST'){
         let [tempVertexList, tempEdgeList] = resetStatus();
+        if(tempVertexList.length === 0){
+            return {
+                ...state, 
+                vertexList: tempVertexList,
+                edgeList: tempEdgeList,
+                tempEdge: [],
+                instructionMess:"Your graph is Empty !!"
+            }
+        }
         if(state.isDirected !== 1){
             let N = state.matrix.length;
             let src = 0;
@@ -1834,6 +1808,7 @@ export const reducer = (state, action) => {
         }
       
         let [tempVertexList, tempEdgeList] = resetStatus();
+
         let resultList =[];
       
         resultVertices.forEach((item)=>{
@@ -1915,6 +1890,16 @@ export const reducer = (state, action) => {
     
     if(action.type === 'COUNT_CC'){
         let N = state.matrix.length;
+        let [tempVertexList, tempEdgeList] = resetStatus();
+        if(tempVertexList.length === 0){
+            return {
+                ...state, 
+                vertexList: tempVertexList,
+                edgeList: tempEdgeList,
+                tempEdge: [],
+                instructionMess:"Your graph is Empty !!"
+            }
+        }
         let src = 0;
         for(let i = 0 ; i < N ; i++){
             if(state.matrix[i][i] !== 'x'){
@@ -1943,7 +1928,7 @@ export const reducer = (state, action) => {
                 }
             }
         
-            let [tempVertexList, tempEdgeList] = resetStatus();
+            
             let resultList = [];
            
             let tempString = <span key="-1" >Amount of {state.isDirected === 1 ? "Strongly" : ""} Connected Component:  {resultVerticesSize} <br></br> </span>;
@@ -1978,13 +1963,27 @@ export const reducer = (state, action) => {
 
     if(action.type === 'GET_DISTANCE_MATRIX'){
         let [tempVertexList, tempEdgesList] = resetStatus();
+        if(tempVertexList.length === 0){
+            return {
+                ...state, 
+                vertexList: tempVertexList,
+                edgeList: tempEdgesList,
+                tempEdge: [],
+                instructionMess:"Your graph is Empty !!"
+            }
+        }
         let matrix = state.matrix.slice(0);
         let displayMatrix = [];
         let n = matrix.length;
         for(let i = 0 ; i < n ; i++){
             let temp = []
             for(let j = 0 ; j < n; j++){
-                temp.push(<td key = {"0" + i + j}>{matrix[i][j]}</td>);
+                if(matrix[i][j] === Infinity){
+                    temp.push(<td key = {"0" + i + j}>Inf</td>);
+                }else{
+                    temp.push(<td key = {"0" + i + j}>{matrix[i][j]}</td>);
+                }
+               
                
             }
             displayMatrix.push(<tr key = {i}>{temp}</tr>);
@@ -2003,7 +2002,15 @@ export const reducer = (state, action) => {
         let matrix = copyMatrix(state.matrix);
         let screenResult = [];
         let [tempVertexList, tempEdgesList] = resetStatus();
-
+        if(tempVertexList.length === 0){
+            return {
+                ...state, 
+                vertexList: tempVertexList,
+                edgeList: tempEdgesList,
+                tempEdge: [],
+                instructionMess:"Your graph is Empty !!"
+            }
+        }
         if(state.isDirected !== 1){
          
             let result = fleury(matrix, state.isDirected);
@@ -2092,11 +2099,20 @@ export const reducer = (state, action) => {
     }
     
     if(action.type === 'HAMILTON_TRAIL'){
+        
+        let [tempVertexList, tempEdgesList] = resetStatus();
+        if(tempVertexList.length === 0){
+            return {
+                ...state, 
+                vertexList: tempVertexList,
+                edgeList: tempEdgesList,
+                tempEdge: [],
+                instructionMess:"Your graph is Empty !!"
+            }
+        }
         let matrix = copyMatrix(state.matrix);
         let circuit = hamilton(matrix, 1)
         let path = hamilton(matrix, 2);
-        let [tempVertexList, tempEdgesList] = resetStatus();
-
         const n = state.vertexList.length;
         const pathSize = path.length;
         const circuitSize = circuit.length;

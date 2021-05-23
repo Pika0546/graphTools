@@ -1,11 +1,10 @@
 import React, {useState, useEffect} from 'react'
-import homeIcon from '../img/homeIcon1.png'
+import homeIcon from '../img/home.png'
 
-
-const Navbar = ({getUserOption}) => {
+import { Link } from 'react-router-dom';
+const Navbar = () => {
 
     const [openMenu, setOpenMenu] = useState(false);
-
     const handler = () =>{
         if(window.innerWidth > 767){
             setOpenMenu(false);
@@ -20,41 +19,30 @@ const Navbar = ({getUserOption}) => {
         }
     }, [])
 
+
     return (
         <>
             <section className="navbar">
-                <div className="brand"
-                     onClick={()=>{
-                        window.location.reload();
-                    }}
-                >
+                <Link to='/' className="brand">
                     <img className="logo" src={homeIcon} alt="icon"></img>
                     <span> Graph Tools</span>
-                </div>
+                </Link>
                 <ul className="navbar__list">
-                <li  className="navbar__list__item"
-                    onClick={()=>{
-                        getUserOption('')
-                    }}
-                >
-                        Home
-                    </li>
-                    <li  className="navbar__list__item"
-                        onClick={()=>{
-                            getUserOption(1)
-                        }}
-                    >
-                        Matrix
-                    </li>
-                   
-                    <li  
-                        className="navbar__list__item"
-                        onClick={()=>{
-                            getUserOption(2)
-                        }}
-                    >
-                        Contact us
-                    </li>
+                    <Link to='/'>
+                        <li className="navbar__list__item">
+                            Home
+                        </li>
+                    </Link>
+                    <Link to="/main/1">
+                        <li className="navbar__list__item"> 
+                            Matrix
+                        </li>
+                    </Link>
+                    <Link to='/contact'> 
+                        <li className="navbar__list__item">
+                            Contact us
+                        </li>
+                    </Link>
                 </ul>
                 <div 
                     className={"navbar__button " + (openMenu? "is-open" : "")} 
@@ -67,33 +55,36 @@ const Navbar = ({getUserOption}) => {
             </section>
             <div className={"menu " + (openMenu ? "is-open" : "") }>
                 <ul className="menu__content">
-                    <li 
-                        className="menu__content__item"
-                        onClick={()=>{
-                            getUserOption('');
-                            setOpenMenu(false);
-                        }}
-                    >
-                        <span> Home </span>
-                    </li>
-                    <li  
-                        className="menu__content__item"
-                        onClick={()=>{
-                            getUserOption(1);
-                            setOpenMenu(false);
-                        }}
-                    >
-                        <span>Matrix</span>
-                    </li >
-                    <li  
-                        className="menu__content__item"
-                        onClick={()=>{
-                            getUserOption(2);
-                            setOpenMenu(false);
-                        }}
-                    >
-                        <span> Contact us</span>
-                    </li>
+                    <Link to='/'>
+                        <li 
+                            className="menu__content__item"
+                            onClick={()=>{
+                                setOpenMenu(false);
+                            }}
+                        >
+                            <span> Home </span>
+                        </li>
+                    </Link>
+                    <Link to='/main/1'>
+                        <li  
+                            className="menu__content__item"
+                            onClick={()=>{
+                                setOpenMenu(false);
+                            }}
+                        >
+                            <span>Matrix</span>   
+                        </li >
+                    </Link>
+                    <Link to='/contact'> 
+                        <li  
+                            className="menu__content__item"
+                            onClick={()=>{
+                                setOpenMenu(false);
+                            }}
+                        >
+                            <span> Contact us</span>
+                        </li>
+                    </Link>
                 </ul>
             </div>
         </>
