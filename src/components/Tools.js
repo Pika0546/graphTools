@@ -19,7 +19,7 @@ const Tools = ({handleToolsAction, action}) => {
                     handleToolsAction('adding-vertex')
                 }}
             >
-                 <span className="tools__text"><i className="fas fa-plus"></i>  Add Vertex</span>
+                 <span className="tools__text"><i className="fas fa-plus"></i>  Vertex</span>
 
             </div>
             <div 
@@ -28,7 +28,7 @@ const Tools = ({handleToolsAction, action}) => {
                     handleToolsAction('adding-edge')
                 }}
             >
-                <span className="tools__text"><i className="fas fa-plus"></i>  Add Edge</span>
+                <span className="tools__text"><i className="fas fa-plus"></i>  Edge</span>
 
             </div>
             <div 

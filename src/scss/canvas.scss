@@ -14,6 +14,7 @@
     overflow: auto;
     border-right: none;
     border-bottom: none;
+    // touch-action: none;
     &__area{
         position: relative;
         width: 8000px;
