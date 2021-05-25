@@ -287,7 +287,6 @@ const Canvas = ({matrix}) => {
             let mouse1Y = event.touches[0].pageY - state.vertexList[index].y;
             if(state.vertexList[index].status === 'is-in-select-to-move'){
                 document.ontouchmove = (e) => {
-                
                     e = e || window.event;
                     e.stopPropagation();
                     e.preventDefault();
@@ -295,9 +294,9 @@ const Canvas = ({matrix}) => {
                 }
             }
             else{
-
                 document.ontouchmove = (e) => {
                     e = e || window.event;
+
                     e.stopPropagation();
                     e.preventDefault();
                     moveElement(e.touches[0].pageX, e.touches[0].pageY, index, mouse1X, mouse1Y);
