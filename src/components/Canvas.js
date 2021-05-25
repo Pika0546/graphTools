@@ -115,9 +115,6 @@ const Canvas = ({matrix}) => {
 		document.onmouseup = null;
 		document.onmousemove = null;
         document.ontouchend = null;
-        // if(index !== -1){
-        //     document.getElementById("vertex-" + state.vertexList[index].value).ontouchmove = null;
-        // }
         document.ontouchmove = null;
 	}
 
@@ -278,6 +275,8 @@ const Canvas = ({matrix}) => {
         dispatch({type: "CLOSE_EDGE_FORM"});
     }
 
+    
+
     const onTouchVertex = (event, id) => {
         if(action === "default"){
             event = event || window.event;
@@ -285,6 +284,12 @@ const Canvas = ({matrix}) => {
             let index = findVertex(id);
             let mouse1X = event.touches[0].pageX - state.vertexList[index].x;
             let mouse1Y = event.touches[0].pageY - state.vertexList[index].y;
+            const touchMove = (e) => {
+                e = e || window.event;
+                e.stopPropagation();
+                e.preventDefault();
+                moveElement(e.touches[0].pageX, e.touches[0].pageY, index, mouse1X, mouse1Y);
+            }
             if(state.vertexList[index].status === 'is-in-select-to-move'){
                 document.ontouchmove = (e) => {
                     e = e || window.event;
@@ -294,14 +299,17 @@ const Canvas = ({matrix}) => {
                 }
             }
             else{
-                document.ontouchmove = (e) => {
-                    e = e || window.event;
-                    e.stopPropagation();
-                    // e.preventDefault();
-                    moveElement(e.touches[0].pageX, e.touches[0].pageY, index, mouse1X, mouse1Y);
-                }
+                // document.ontouchmove = (e) => {
+                //     e = e || window.event;
+                //     e.stopPropagation();
+                //     e.preventDefault();
+                //     moveElement(e.touches[0].pageX, e.touches[0].pageY, index, mouse1X, mouse1Y);
+                // }
+
+                document.addEventListener("touchmove",touchMove, {passive: false});
             }    
             document.ontouchend = (e,) => {
+                document.removeEventListener("touchmove", touchMove, {passive: false});
                 closeDragElement(e);
             }
         }
