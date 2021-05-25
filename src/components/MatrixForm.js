@@ -26,6 +26,7 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
     const handleSubmitForm = () => {
         if(myState.matrix.length !== 0){
             let tempMatrix = myState.matrix.split('\n');
+           
             tempMatrix = tempMatrix.filter((item)=>{
                  return item.length !== 0;
             })
@@ -35,7 +36,8 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
             let ring = false;
             
             for(let i = 0 ; i < n ; i++){
-                tempMatrix[i] = tempMatrix[i].replaceAll(/,/g,'');
+                tempMatrix[i] = tempMatrix[i].replaceAll(/,/g,' ');
+                tempMatrix[i] = tempMatrix[i].replaceAll(/\t/g,' ');
                 tempMatrix[i] = tempMatrix[i].split(" ");
                 tempMatrix[i] = tempMatrix[i].filter((item)=>{
                     return item !== "";
@@ -45,6 +47,7 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
                     tempMatrix[i][j] = tempMatrix[i][j].toLowerCase();
                 }
             }
+            console.log(tempMatrix)
             for(let i = 0 ; i < n; i ++){
                 let m = tempMatrix[i].length;
                 for(let j = 0 ; j < m ;j++){

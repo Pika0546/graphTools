@@ -43,6 +43,7 @@
                 padding: 20px;
                 @include respond(exml){
                     padding: 10px;
+                    width: 100%;
                 }
                 &:first-child{
                     animation: introButtonLeft .3s linear 1;
@@ -55,6 +56,7 @@
                 margin-top: 10px;
                 display: grid;
                 grid-template-columns: auto;
+                gap: 15px;
             }
         }
     }

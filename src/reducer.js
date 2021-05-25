@@ -880,7 +880,6 @@ export const reducer = (state, action) => {
         }
         for(let i = 0 ; i < n ; i++){
             if(i !== u && i!== v){
-
                 if(matrix[u][i] !== Infinity && matrix[u][i] !== 'x'){
                     let isBrigde = fleuryCheckBrigde(matrix, u, i);
                     if(isBrigde === false){
@@ -895,11 +894,8 @@ export const reducer = (state, action) => {
     const fleuryRecur = (matrix, vertex, result, flag) => {
         if(flag[0]){
             const n = matrix.length;
-            
             for(let i = 0 ; i < n ; i++){
-             
                 if(i !== vertex && flag[0]){ 
-              
                     if(matrix[vertex][i] !== 'x' && matrix[vertex][i] !== Infinity && fleuryCheckEdge(matrix, vertex, i)){
                        let isOkEdge = fleuryCheckEdge(matrix,vertex, i);
                        if(isOkEdge){
@@ -931,7 +927,6 @@ export const reducer = (state, action) => {
             }
             src += 1;
             let CC = DFS(matrix, src)[0];
-        
             const numberOfCC = CC.length;
             let result = [];
             for(let i = 0 ; i < numberOfCC; i++){
@@ -948,7 +943,6 @@ export const reducer = (state, action) => {
                 if(oddVertices.length === 0){
                     oddVertices.push(u);
                 }
-            
                 for(let j = 0; j < oddVertices.length; j++){
                     let tempResult = [];
                     let flag = [true];
@@ -961,7 +955,6 @@ export const reducer = (state, action) => {
             return result;
         }
         else{
-         
             let tempMatrix = copyMatrix(matrix);
             let isEulerian = checkEulerian(matrix, isDir)
             let scc = countSCC(matrix)[0];
@@ -975,6 +968,7 @@ export const reducer = (state, action) => {
                     }
                 }
                 let numberOfScc = scc.length;
+            
                 for(let i = 0 ; i < numberOfScc; i++){
                     if(isChildOfList(nonZeroVertex, scc[i])){
                         flag = true;
@@ -998,21 +992,18 @@ export const reducer = (state, action) => {
                     return temp;
                 }
                 else{
-                    let temp = [];
-                    temp.push(0);
-                    temp.push([]);
-                    return temp;
+                   
+                    isEulerian = 2;
                 }
             }
             else if(isEulerian === 1){
+                //Euler path
                 let nonZeroVertex = [];
-                let flag = false;
                 for(let i = 0 ; i < n ; i++){
                     if(vertexDegree[i][0] !== 0 && vertexDegree[i][1] !== 0 && vertexDegree[i][0]!== 'x'){
                         nonZeroVertex.push(i);
                     }
                 }
-               
                 let unDirectedGraph = getUndirectedGraph(copyMatrix(tempMatrix));
                 let src = 0;
                 for(let i = 0 ; i < n ; i++){
@@ -1022,6 +1013,7 @@ export const reducer = (state, action) => {
                     }
                 }
                 src += 1;
+                let flag = false;
                 let cc = DFS(unDirectedGraph, src)[0];
                 let numberOfCc = cc.length;
                 for(let i = 0 ; i < numberOfCc; i++){
@@ -1030,6 +1022,7 @@ export const reducer = (state, action) => {
                         break;
                     }
                 }
+                
                 if(flag){
                     for(let i = 0 ; i < n ; i++){
                         if(vertexDegree[i][0] !== 'x'){
@@ -1048,18 +1041,28 @@ export const reducer = (state, action) => {
                     return temp;
                 }
                 else{
-                  
-
-                    let temp = [];
-                    temp.push(2);
-                    temp.push([]);
-                    return temp;
+                    isEulerian = 2;
                 }
                 
-                //Euler path;
             }
-            else{
-                return [2, []];
+            if(isEulerian === 2){
+                let temp = [];
+                temp.push(2);
+                for(let i = 0 ; i < n ; i++){
+                    if(vertexDegree[i][0] !== 'x'){
+                        while(vertexDegree[i][0] >= vertexDegree[i][1]){
+                            let recurFlag = [true];
+                            let result = [];
+                            fleuryRecur(tempMatrix,i , result, recurFlag);
+                            vertexDegree[i][0] -= 1;
+                            if(result.length !== 0){
+                                temp.push(result);
+                            }
+                            
+                        }
+                    }
+                }
+                return temp;
             }
            
         }
@@ -1225,7 +1228,10 @@ export const reducer = (state, action) => {
           
             for(let i = 0 ; i < size ; i++){
                 for(let j = 0 ; j < size; j++){
-                    if(tempMatrix[i][j] === 0){
+                    if(i === j){
+                        tempMatrix[i][j] = 0;
+                    }
+                    else if(tempMatrix[i][j] === 0){
                         tempMatrix[i][j] = Infinity;
                     }
                     else if(tempMatrix[i][j] === 1){                     
@@ -1728,7 +1734,6 @@ export const reducer = (state, action) => {
             
             let resultMatrix = [];
             let minW = Infinity;
-            // resultMatrix = kruskalForDirected(matrix, roots[4]);
             for(let i = 0 ; i < numberOfRoot; i++){
                 let tempResult = kruskalForDirected(matrix, roots[i]);
                 let tempW = 0;
@@ -2011,16 +2016,18 @@ export const reducer = (state, action) => {
                 instructionMess:"Your graph is Empty !!"
             }
         }
+       
         if(state.isDirected !== 1){
          
             let result = fleury(matrix, state.isDirected);
-          
+         
             let resultSize = result.length;
             
             if(resultSize === 1){
-                let edgeNum = result[0].length;
-             
-                if(edgeNum > 1 && (result[0][0][0] === result[0][edgeNum - 1][1] ||result[0][0][0] === result[0][edgeNum - 1][0]) ){
+               
+                let isEulerian = checkEulerian(state.matrix,  state.isDirected !== 1)
+             //||result[0][0][0] === result[0][edgeNum - 1][0]
+                if(isEulerian === 0 ){
                     screenResult.push("This is an Eulerian graph");
                     screenResult.push(<br key={screenResult.length}></br>);
                 }else{
@@ -2035,7 +2042,7 @@ export const reducer = (state, action) => {
                 screenResult.push("This graph is not eulerian and does not have any euler path");
                 screenResult.push(<br key={screenResult.length}></br>);
                 screenResult.push("It can be draw by " + resultSize + " draw ");
-                screenResult.push(<br key={screenResult.length}></br>);
+                screenResult.push(<br key={screenResult.length-1}></br>);
             }
             for(let i = 0 ; i < resultSize; i ++){
                 let eulerSize = result[i].length;
@@ -2059,16 +2066,13 @@ export const reducer = (state, action) => {
                 edgeList: tempEdgesList,
                 instructionMess: <span>{screenResult}</span>
             }
-        }else{
-            // let isEulerian = checkEulerian(matrix,state.isDirected);
-           
+        }
+        else{
             let result = fleury(matrix, state.isDirected);
-
             let resultFlag = result[0];
             let screenResult = [];
-            if(resultFlag !== 2){
+            if(resultFlag === 0){
                 let eulerCircuit = result[1];
-         
                 if(resultFlag === 0){
                       screenResult.push("This is an Eulerian graph");
                 }else{
@@ -2087,7 +2091,29 @@ export const reducer = (state, action) => {
                 
             }
             else {
-                screenResult.push(screenResult.push("This graph is not eulerian and does not have any euler path"));
+                
+                const resultSize = result.length;
+                if(result.length === 2){
+                    screenResult.push("This graph is not a Eulerian Graph but it have Euler path");
+                }else{
+                    screenResult.push("This graph is not eulerian and does not have any euler path");
+                    screenResult.push(<br key={screenResult.length}></br>);
+                    screenResult.push("It can be draw by " + (resultSize - 1) + " draw ");
+                }
+                screenResult.push(<br key={screenResult.length - 1}></br>);
+                for(let i = 1; i < resultSize; i++){
+                    let tempSize = result[i].length;
+                    for(let j = 0 ; j < tempSize ; j++){
+                        result[i][j][0] += 1;
+                        result[i][j][1] += 1;
+                        let edge = result[i][j].join("-");
+                        screenResult.push(edge);
+                        if(j !== tempSize - 1){
+                            screenResult.push(", ");
+                        }
+                    }
+                    screenResult.push(<br key={screenResult.length+1}></br>);
+                }
             }
             return {
                 ...state,
@@ -2126,7 +2152,7 @@ export const reducer = (state, action) => {
                 ...state,
                 vertexList: tempVertexList,
                 edgeList: tempEdgesList,
-                instructionMess:"Oh c'mon man ! You have not created anything !"
+                instructionMess:"Your graph is empty !"
             }
         }
         if(n === 1){
@@ -2134,7 +2160,7 @@ export const reducer = (state, action) => {
                 ...state,
                 vertexList: tempVertexList,
                 edgeList: tempEdgesList,
-                instructionMess:"Your graph only have one vertex. So it is a Hamiltonian or not ? Who knows.",
+                instructionMess:"Your graph have Hamiton Path",
             }
         }
         if(n === 2){
