@@ -284,12 +284,14 @@ const Canvas = ({matrix}) => {
             let index = findVertex(id);
             let mouse1X = event.touches[0].pageX - state.vertexList[index].x;
             let mouse1Y = event.touches[0].pageY - state.vertexList[index].y;
+            document.getElementsByTagName("BODY")[0].classList.add("disable-pull-to-refresh");
             const touchMove = (e) => {
                 e = e || window.event;
                 e.stopPropagation();
                 e.preventDefault();
                 moveElement(e.touches[0].pageX, e.touches[0].pageY, index, mouse1X, mouse1Y);
             }
+            
             if(state.vertexList[index].status === 'is-in-select-to-move'){
                 document.ontouchmove = (e) => {
                     e = e || window.event;
@@ -309,6 +311,8 @@ const Canvas = ({matrix}) => {
                 document.addEventListener("touchmove",touchMove, {passive: false});
             }    
             document.ontouchend = (e,) => {
+                document.getElementsByTagName("BODY")[0].classList.remove("disable-pull-to-refresh");
+
                 document.removeEventListener("touchmove", touchMove, {passive: false});
                 closeDragElement(e);
             }

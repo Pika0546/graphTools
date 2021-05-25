@@ -40,6 +40,11 @@ body{
     &::-webkit-scrollbar-thumb:hover {
         background: rgb(255, 0, 106); 
     }
+
+}
+
+body.disable-pull-to-refresh{
+    overscroll-behavior: contain;
 }
 
 ul{
