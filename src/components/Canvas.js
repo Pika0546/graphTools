@@ -296,9 +296,8 @@ const Canvas = ({matrix}) => {
             else{
                 document.ontouchmove = (e) => {
                     e = e || window.event;
-
                     e.stopPropagation();
-                    e.preventDefault();
+                    // e.preventDefault();
                     moveElement(e.touches[0].pageX, e.touches[0].pageY, index, mouse1X, mouse1Y);
                 }
             }    
@@ -307,24 +306,6 @@ const Canvas = ({matrix}) => {
             }
         }
     }
-
-    // const startSelectAreaTouch = (e) => {
-    //     if(action === 'default'){
-    //         e = e || window.event;
-    //         let myCanvas = document.getElementById("canvas");
-    //         let canvasRect = myCanvas.getBoundingClientRect();
-    //         let x = e.touches[0].pageX - canvasRect.left;
-    //         let y = e.touches[0].pageY - canvasRect.top;
-    //         let startX = e.touches[0].pageX
-    //         let startY = e.touches[0].pageY
-    //         document.ontouchend = (e) => {
-    //             closeDrawArea(e);
-    //         }
-    //         document.ontouchmove = (e) => {
-    //             drawArea(e.touches[0].pageX, e.touches[0].pageY, x, y, startX, startY);
-    //         }
-    //     }
-    // }
 
     let selectedAreaEle = "";
     if(state.selectedArea.isRender === true){
@@ -406,7 +387,6 @@ const Canvas = ({matrix}) => {
                     id="canvas"
                     onClick={handleClickOnCanvas}
                     onMouseDown={startSelectArea}
-                    // onTouchStart={startSelectAreaTouch}
                 >
                     {state.vertexList.map((item)=>{
                         return   <div
