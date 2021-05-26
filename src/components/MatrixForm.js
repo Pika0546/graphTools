@@ -9,6 +9,7 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
         invalidValue: false, 
         invalidMatrix: false,
         isRing: false,
+        isOversize: false,
     })
 
     const handleChange = (event) =>{
@@ -34,7 +35,13 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
             let notSquareMatrix = false;
             let invalidVal = false;
             let ring = false;
-            
+            if(n > 100){
+                setMyState({
+                    ...myState,
+                    isOversize: true,
+                });
+                return;
+            }
             for(let i = 0 ; i < n ; i++){
                 tempMatrix[i] = tempMatrix[i].replaceAll(/,/g,' ');
                 tempMatrix[i] = tempMatrix[i].replaceAll(/\t/g,' ');
@@ -47,7 +54,6 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
                     tempMatrix[i][j] = tempMatrix[i][j].toLowerCase();
                 }
             }
-            console.log(tempMatrix)
             for(let i = 0 ; i < n; i ++){
                 let m = tempMatrix[i].length;
                 for(let j = 0 ; j < m ;j++){
@@ -153,7 +159,8 @@ const MatrixForm = ({handleCloseMatrixForm,handleSubmitMatrixForm  }) => {
                     {myState.invalidValue ? <span>Your matrix contain invalid character !</span> : ""}
                     {myState.invalidMatrix ? <span>Your matrix is not square !</span> : ""}
                     {myState.isRing ? <span>Your matrix contain ring !</span> : ""}
-                    
+                    {myState.isOversize ? <span>Your matrix is too big !</span> : ""}
+
                 </div>
 
                 <div className="matrix-form__buttons">
