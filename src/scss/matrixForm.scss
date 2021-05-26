@@ -52,6 +52,8 @@
             word-wrap: unset;
             white-space: nowrap;
         }
+        scrollbar-color:  #cc2b5e  $glass-bg;
+        scrollbar-width: thin;
         /* width */
         textarea::-webkit-scrollbar {
             width: 8px;

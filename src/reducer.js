@@ -1163,7 +1163,6 @@ export const reducer = (state, action) => {
         return path;
     }
 
-
     if(action.type === 'DRAW_FULL_GRAPH'){
 
         let tempMatrix = copyMatrix(action.payload);
@@ -1269,7 +1268,7 @@ export const reducer = (state, action) => {
             tempEdge: [],
             vertexList: tempVertexList,
             edgeList: tempEdgeList,
-            instructionMess:"Click any two vertices to draw an edge"
+            instructionMess:"Click on any two vertices to draw an edge"
         }
     }
 
@@ -1319,12 +1318,18 @@ export const reducer = (state, action) => {
             ...state,
             tempEdge: [], openEdgeForm: false,
             vertexList: tempVertexList,
-            instructionMess:"Click any two vertices to draw an edge"
+            instructionMess:"Click on any two vertices to draw an edge"
         }
     }
 
 	if (action.type === 'ADD_VERTEX') {
         let {x, y, value} = action.payload;
+        if(state.vertexList.length === 100){
+            return{
+                ...state,
+                instructionMess:"You have reached the maximum number of vertices: 100",
+            }
+        }
         const myCanvasContainer = document.getElementById("canvas-container");
         let tempX = x - myCanvasContainer.offsetLeft + myCanvasContainer.scrollLeft;
 		let tempY = y - myCanvasContainer.offsetTop + myCanvasContainer.scrollTop ;
@@ -1515,7 +1520,7 @@ export const reducer = (state, action) => {
                 }),
                 vertexList: tempVertexList,
                 tempEdge: [],
-                instructionMess: "Click any two vertices to draw an edge"
+                instructionMess: "Click on any two vertices to draw an edge"
             }
         }
         else{
@@ -1531,7 +1536,7 @@ export const reducer = (state, action) => {
                 tempEdge: [],
                 edgeList: tempEdgeList,
                 vertexList: tempVertexList,
-                instructionMess: "Click any two vertices to draw an edge"
+                instructionMess: "Click on any two vertices to draw an edge"
             }
         }
     }
@@ -1666,7 +1671,7 @@ export const reducer = (state, action) => {
                 vertexList: tempVertexList,
                 edgeList: tempEdgeList,
                 tempEdge: [],
-                instructionMess:"Your graph is Empty !!"
+                instructionMess:"Your graph is empty !!"
             }
         }
         if(state.isDirected !== 1){
@@ -1688,7 +1693,7 @@ export const reducer = (state, action) => {
                     vertexList: tempVertexList,
                     edgeList: tempEdgeList,
                     tempEdge: [],
-                    instructionMess:"You graph is not a connected graph so it did not have any spanning tree"
+                    instructionMess:"You graph is not a connected graph so it does not have any spanning tree"
                 }
             }
             let vertexListSize = tempVertexList.length;
@@ -1902,7 +1907,7 @@ export const reducer = (state, action) => {
                 vertexList: tempVertexList,
                 edgeList: tempEdgeList,
                 tempEdge: [],
-                instructionMess:"Your graph is Empty !!"
+                instructionMess:"Your graph is empty !"
             }
         }
         let src = 0;
@@ -1974,7 +1979,7 @@ export const reducer = (state, action) => {
                 vertexList: tempVertexList,
                 edgeList: tempEdgesList,
                 tempEdge: [],
-                instructionMess:"Your graph is Empty !!"
+                instructionMess:"Your graph is empty !"
             }
         }
         let matrix = state.matrix.slice(0);
@@ -2013,7 +2018,7 @@ export const reducer = (state, action) => {
                 vertexList: tempVertexList,
                 edgeList: tempEdgesList,
                 tempEdge: [],
-                instructionMess:"Your graph is Empty !!"
+                instructionMess:"Your graph is empty !"
             }
         }
        
@@ -2133,7 +2138,7 @@ export const reducer = (state, action) => {
                 vertexList: tempVertexList,
                 edgeList: tempEdgesList,
                 tempEdge: [],
-                instructionMess:"Your graph is Empty !!"
+                instructionMess:"Your graph is empty !"
             }
         }
         let matrix = copyMatrix(state.matrix);
@@ -2160,7 +2165,7 @@ export const reducer = (state, action) => {
                 ...state,
                 vertexList: tempVertexList,
                 edgeList: tempEdgesList,
-                instructionMess:"Your graph have Hamiton Path",
+                instructionMess:"Your graph have Hamilton Path",
             }
         }
         if(n === 2){
@@ -2169,7 +2174,7 @@ export const reducer = (state, action) => {
                     ...state,
                     vertexList: tempVertexList,
                     edgeList: tempEdgesList,
-                    instructionMess:"Your graph does not have Hamilton Circuit and Hamilton path",
+                    instructionMess:"Your graph does not have Hamilton Circuit or Hamilton path",
                 }
             }else{
                 return {

@@ -11,6 +11,10 @@
         max-height: 140px;
         overflow-y: auto;
         overflow-x: hidden;
+
+        scrollbar-color:  #cc2b5e  $glass-bg;
+    scrollbar-width: thin;
+
         /* width */
         &::-webkit-scrollbar {
             width: 8px;
