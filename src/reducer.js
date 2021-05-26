@@ -193,8 +193,11 @@ export const reducer = (state, action) => {
     }
 
     const addEdge = (vertex1, vertex2, edgeList, dir, weight) => {
-        
+        if(isInEdgeList(vertex1, vertex2, dir, edgeList) !== -1){
+            return;
+        }
         let id = vertex1.value.toString() + vertex2.value.toString();
+        
         let [length, angle] = calculateEdgeProp(vertex1, vertex2);
         let startX = vertex1.x;
         let startY = vertex1.y;
@@ -2356,13 +2359,18 @@ export const reducer = (state, action) => {
             }
             return true;
         })
-
-        for(let value = 0; value < numberOfVertex;value++){
-            if(tempVertexList[value].status === 'is-in-select-to-move'){
-                for(let i = 0 ; i < numberOfVertex; i++){
-                    if(i !== tempVertexList[value].value - 1 && state.matrix[tempVertexList[value].value - 1][i] !== 'x' && state.matrix[tempVertexList[value].value - 1][i] !== Infinity){
-                        let index1 = findVertex(i + 1);
-                        addEdge(tempVertexList[value],  tempVertexList[index1], tempEdgeList, state.isDirected, state.matrix[tempVertexList[value].value - 1][i]);
+        for(let i = 0; i < numberOfVertex;i++){
+            if(tempVertexList[i].status === 'is-in-select-to-move'){
+                let value1 = tempVertexList[i].value - 1;
+                for(let j = 0 ; j < numberOfVertex; j++){
+                    let value2 = tempVertexList[j].value - 1
+                    if(i !== j ){
+                        if(state.matrix[value1][value2] !== Infinity){
+                            addEdge(tempVertexList[i],  tempVertexList[j], tempEdgeList, state.isDirected, state.matrix[value1][value2]);
+                        }
+                        if(state.matrix[value2][value1] !== Infinity){
+                            addEdge(tempVertexList[j],  tempVertexList[i], tempEdgeList, state.isDirected, state.matrix[value2][value1]);
+                        }
                     }
                 }
             }
