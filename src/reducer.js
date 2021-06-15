@@ -1,12 +1,7 @@
-// import { isCompositeComponentWithType } from "react-dom/cjs/react-dom-test-utils.development";
-
-// import { queryByLabelText } from "@testing-library/dom";
-
 export const reducer = (state, action) => {
 
     const vertexSize = 30;
     const canvasSize = 8000;
-
 
     const sortForMDST = (edges, matrix) => {
         const n = edges.length;
@@ -14,45 +9,42 @@ export const reducer = (state, action) => {
             const tempSize = edges[i].length;
             for(let j = 1; j < tempSize; j++){
                 let current = edges[i][j];
-               
-
                 let k = j - 1;
                 while(k > -1 && matrix[current][i] < matrix[edges[i][k]][i]){
-               
                     edges[i][k + 1] = edges[i][k];
                     k--;
                 }
                 edges[i][k + 1] = current;
             }
         }
-    }
+    };
 
     const copyObject = (object) => {
         let result = JSON.parse(JSON.stringify(object));
         return result;
-    }
+    };
 
     const copyArray= (array) =>{
         let result = [];
         result = array.map((item)=>{
             return copyObject(item);
-        })
+        });
         return result;
-    }
+    };
 
     const copyMatrix = (matrix)=>{
         let result = [];
         const n = matrix.length;
         for(let i = 0 ; i < n  ;i++){
             let n1 = matrix[i].length;
-            let temp = []
+            let temp = [];
             for(let j = 0 ; j < n1; j++){
                 temp.push(matrix[i][j]);
             }
             result.push(temp);
         }
         return result;
-    }
+    };
 
     const resetStatus = ()=>{
         let tempVertexList = copyArray(state.vertexList);
@@ -71,7 +63,7 @@ export const reducer = (state, action) => {
         }
       
         return [tempVertexList,tempEdgeList];
-    }
+    };
 
     const isInList = (item, array) => {
         const n = array.length;
@@ -82,7 +74,7 @@ export const reducer = (state, action) => {
         }
         return false;
       
-    }
+    };
 
     const isChildOfList = (arr1, arr2) => {
         const arr1Size = arr1.length;
@@ -97,7 +89,7 @@ export const reducer = (state, action) => {
             }
         }
         return true;
-    }
+    };
 
     const calculateEdgeProp = (vertex1, vertex2) => {
         let x1 = vertex1.x;
@@ -118,7 +110,7 @@ export const reducer = (state, action) => {
         calc = calc * 180 / Math.PI;
         let length = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
         return [length, -calc];
-    }
+    };
 
     const isInEdgeList = (vertex1, vertex2, dir, edgeList) =>{
         let n = edgeList.length;
@@ -143,22 +135,22 @@ export const reducer = (state, action) => {
             }
         }
         return -1;
-    }
+    };
 
     const findVertex = (value, vertexList = state.vertexList) => {
         let index = vertexList.findIndex((item) => {
             return item.value === value;
-        })
+        });
         return index;
-    }
+    };
 
     const getDistance = (x1, y1, x2, y2) => {
         return (x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2);
-    }
+    };
 
     const rad = (deg) => {
         return deg*Math.PI/180;
-    }
+    };
 
     const checkVertex = (x ,y) => {
         const dis = 30;
@@ -171,14 +163,14 @@ export const reducer = (state, action) => {
             }
         }
         return true;
-    }
+    };
 
 	const solveMyMathProblem = (xa, ya, xo, yo, alpha) => {
 		let y = (ya - yo)*Math.cos(alpha) + yo;
 		let x1 = Math.sqrt((ya - yo) * (ya - yo) - (y - yo)*(y - yo)) + xo;
 		let x2 = -Math.sqrt((ya - yo) * (ya - yo) - (y - yo)*(y - yo)) + xo;
 		return [x1, y, x2, y];
-	}
+	};
 
     const findEdge =(vertex1, vertex2, edgeList = state.edgeList)=>{
         let index = edgeList.findIndex((item)=>{
@@ -188,9 +180,9 @@ export const reducer = (state, action) => {
             else{
                 return (vertex1.toString() + vertex2.toString()) === item.id || item.id === (vertex2.toString() + vertex1.toString()) ;
             }
-        })
+        });
         return index;
-    }
+    };
 
     const addEdge = (vertex1, vertex2, edgeList, dir, weight) => {
         if(isInEdgeList(vertex1, vertex2, dir, edgeList) !== -1){
@@ -242,7 +234,7 @@ export const reducer = (state, action) => {
                 dir,
                 startX,
                 startY,
-                status: ""})
+                status: ""});
         }
         else{
             let otherEdgeIndex = isInEdgeList(vertex2, vertex1, dir, edgeList);
@@ -258,11 +250,10 @@ export const reducer = (state, action) => {
                     dir,
                     startX,
                     startY,
-                    status: ""})
+                    status: ""});
             }
         }
-       
-    }
+    };
 
     const floydWarshall = (matrix, src, des) => {
   
@@ -272,7 +263,7 @@ export const reducer = (state, action) => {
         let next = [];
         for(let i = 0 ; i < n ; i ++){
             resultMatrix[i] = matrix[i].slice(0);
-            let nextRow = []
+            let nextRow = [];
             for(let j = 0 ; j < n ; j++){
                 nextRow[j] = -1;
             }
@@ -334,9 +325,8 @@ export const reducer = (state, action) => {
                
             }
         }
-      
         return {resultPaths, resultMatrix};
-    }
+    };
 
     const DFSUtil = (matrix, src, visited)=>{
         let stack = [];
@@ -345,9 +335,7 @@ export const reducer = (state, action) => {
         stack.push(src);
         let resultEdges = [];
         while(stack.length !== 0){  
-
             let s = stack.pop();
-          
             if(!visited[s]){
                 const n = resultVertices.length;
                 for(let i = n-1 ; i >= 0 ; i--){
@@ -366,9 +354,8 @@ export const reducer = (state, action) => {
                 }
             }
         }
-       
         return [resultVertices, resultEdges];
-    }
+    };
 
     const DFS = (matrix, src) => {
         let visited = [];
@@ -393,7 +380,7 @@ export const reducer = (state, action) => {
             }
         }
         return [resultVertices, resultEdges];
-    }
+    };
 
     const BFSUtil = (matrix, src, visited)=>{
         let queue = [];
@@ -421,7 +408,7 @@ export const reducer = (state, action) => {
             }
         }
         return [resultVertices, resultEdges];
-    }
+    };
 
     const BFS = (matrix, src)=>{
         let visited = [];
@@ -445,7 +432,7 @@ export const reducer = (state, action) => {
             }
         }
         return [resultVertices, resultEdges];
-    }
+    };
 
     const getTranspose = (matrix) => {
         const n = matrix.length;
@@ -464,7 +451,7 @@ export const reducer = (state, action) => {
             }
         }
         return resultMatrix;
-    }
+    };
 
     const DFSForSCC = (matrix, visited, src, stack)=>{
         
@@ -476,7 +463,7 @@ export const reducer = (state, action) => {
             }
         }
         stack.push(src);
-    }
+    };
 
     const countSCC = (matrix) => {
         const n = matrix.length;
@@ -516,7 +503,7 @@ export const reducer = (state, action) => {
             }
         }
         return [resultVertices, resultEdges1, resultEdges2];
-    }
+    };
 
     const prim = (matrix, src) => {
         let parent = [];
@@ -557,7 +544,7 @@ export const reducer = (state, action) => {
             }
         }
         return parent;
-    }
+    };
 
     const fixLabel = (label, x, y) => {
         let min = (label[x] < label[y]) ? label[x] : label[y];
@@ -568,7 +555,7 @@ export const reducer = (state, action) => {
                 label[i] = min;
             }
         }
-    }
+    };
 
     let label = [];
     let resultMDST = [];
@@ -608,7 +595,7 @@ export const reducer = (state, action) => {
         visitedMDST[y] = false;
         label = copyArray(labelClone);
         return false;
-    }
+    };
 
     const kruskalForDirected = (matrix, root) => {
         const n = matrix.length;
@@ -657,7 +644,7 @@ export const reducer = (state, action) => {
         }
        
         return copyMatrix(resultMDST);
-    }
+    };
 
     const findMotherVertex = (matrix) => {
         let numberOfVertex = matrix.length;
@@ -693,7 +680,7 @@ export const reducer = (state, action) => {
             
         }
         return result;
-    }
+    };
 
     const getUndirectedGraph = (matrix) => {
         const n = matrix.length;
@@ -716,7 +703,7 @@ export const reducer = (state, action) => {
             }
         }
         return result;
-    }
+    };
 
     const getVertexDegree = (matrix, isDir) => {
         const n = matrix.length;
@@ -761,8 +748,7 @@ export const reducer = (state, action) => {
             }
             return result;
         }
-
-    }
+    };
 
     const checkEulerian= (matrix, isDir) => {
         let vertexDegree = getVertexDegree(matrix, isDir);
@@ -825,8 +811,7 @@ export const reducer = (state, action) => {
             }
             return 2;
         }
-
-    }
+    };
 
     const FleuryDFS = (matrix, u, visited) => {
         const n = matrix.length;
@@ -839,7 +824,7 @@ export const reducer = (state, action) => {
             }
         }
         return count;
-    }
+    };
 
     const fleuryCheckBrigde = (matrix, u, v) => {
         const n = matrix.length;
@@ -863,7 +848,7 @@ export const reducer = (state, action) => {
             matrix[v][u] = temp;
        }
         return (count1 > count2);
-    }
+    };
 
     const fleuryCheckEdge = (matrix, u, v) =>{
         let count = 0;
@@ -892,7 +877,7 @@ export const reducer = (state, action) => {
             }
         }
         return true;
-    }
+    };
 
     const fleuryRecur = (matrix, vertex, result, flag) => {
         if(flag[0]){
@@ -915,7 +900,7 @@ export const reducer = (state, action) => {
             }
         }
         flag[0] = false;
-    }   
+    };
 
     const fleury = (matrix, isDir) => {
         const n = matrix.length;
@@ -938,9 +923,7 @@ export const reducer = (state, action) => {
                 let oddVertices = [];
                 for(let j = 0 ; j < tempSize; j++){
                     if(vertexDegree[CC[i][j]]%2 !== 0){
-                        // u = CC[i][j];
                         oddVertices.push(CC[i][j]);
-                        
                     }
                 }
                 if(oddVertices.length === 0){
@@ -959,10 +942,9 @@ export const reducer = (state, action) => {
         }
         else{
             let tempMatrix = copyMatrix(matrix);
-            let isEulerian = checkEulerian(matrix, isDir)
+            let isEulerian = checkEulerian(matrix, isDir);
             let scc = countSCC(matrix)[0];
             if(isEulerian === 0){
-                //Euler Circuit
                 let nonZeroVertex = [];
                 let flag = false;
                 for(let i = 0 ; i < n ; i++){
@@ -1000,7 +982,6 @@ export const reducer = (state, action) => {
                 }
             }
             else if(isEulerian === 1){
-                //Euler path
                 let nonZeroVertex = [];
                 for(let i = 0 ; i < n ; i++){
                     if(vertexDegree[i][0] !== 0 && vertexDegree[i][1] !== 0 && vertexDegree[i][0]!== 'x'){
@@ -1067,9 +1048,8 @@ export const reducer = (state, action) => {
                 }
                 return temp;
             }
-           
         }
-    }
+    };
 
     const isSafeForHamilton = (v, matrix, path, pos) => {
         if(matrix[path[pos - 1]][v] === Infinity || matrix[path[pos - 1]][v] === 'x' ){
@@ -1082,7 +1062,7 @@ export const reducer = (state, action) => {
             }
         }
         return true;
-    }
+    };
 
     const hamiltonRecur = (matrix, path, pos) => {
         if(pos === state.vertexList.length){
@@ -1103,7 +1083,7 @@ export const reducer = (state, action) => {
             }
         }
         return false;
-    }
+    };
 
     const hamiltonRecur2 = (matrix, path, pos) => {
         if(pos === state.vertexList.length){
@@ -1121,7 +1101,7 @@ export const reducer = (state, action) => {
             }
         }
         return false;
-    }
+    };
 
     const hamilton = (matrix, mode) => {
         let path = [];
@@ -1139,7 +1119,6 @@ export const reducer = (state, action) => {
         if(mode === 1){
             hamiltonRecur(matrix, path, 1);
         }else{
-            // hamiltonRecur2(matrix, path, 1);
             for(let i = 0 ; i < n; i++){
                 if(matrix[i][i] !== 'x'){
                     path[0] = i;
@@ -1161,13 +1140,10 @@ export const reducer = (state, action) => {
                 }
             }
         }
-        
-       
         return path;
-    }
+    };
 
     if(action.type === 'DRAW_FULL_GRAPH'){
-
         let tempMatrix = copyMatrix(action.payload);
         const denta =25;
         const size = tempMatrix.length;
@@ -1216,18 +1192,14 @@ export const reducer = (state, action) => {
                     tempMatrix[i][j] = Infinity;
                 }
                 if((isWeight && tempMatrix[i][j] !== Infinity && i !== j) || (!isWeight && tempMatrix[i][j] !== 0)){
-                  
                     let index1 = findVertex(i + 1, tempVertexList);
                     let index2 = findVertex(j + 1, tempVertexList);
-                    
                     addEdge(tempVertexList[index1],tempVertexList[index2],tempEdgeList,  isDir, isWeight ? tempMatrix[i][j] : 0);
                 }
-                
             }
         }
 
         if(isWeight === 0){
-          
             for(let i = 0 ; i < size ; i++){
                 for(let j = 0 ; j < size; j++){
                     if(i === j){
@@ -1250,7 +1222,7 @@ export const reducer = (state, action) => {
             edgeList: tempEdgeList,
             isDirected: isDir,
             tempEdge: [],
-        }
+        };
     }
 
     if(action.type === 'START_ADD_VERTEX'){
@@ -1261,7 +1233,7 @@ export const reducer = (state, action) => {
             vertexList: tempVertexList,
             edgeList: tempEdgeList,
             instructionMess:"Click everywhere on the canvas to draw a vertex"
-        }
+        };
     }
 
     if(action.type === 'START_ADD_EDGE'){
@@ -1272,7 +1244,7 @@ export const reducer = (state, action) => {
             vertexList: tempVertexList,
             edgeList: tempEdgeList,
             instructionMess:"Click on any two vertices to draw an edge"
-        }
+        };
     }
 
     if(action.type === 'START_REMOVING'){
@@ -1283,33 +1255,25 @@ export const reducer = (state, action) => {
             edgeList: tempEdgeList,
             tempEdge: [],
             instructionMess:"Click on anything to remove it from your graph"
-        }
+        };
     }
 
 	if (action.type === 'DEFAULT') {
-        // let [tempVertexList, tempEdgeList] = resetStatus();
-      
 		return {
             ...state,
-            // vertexList:tempVertexList,
-            // edgeList:tempEdgeList,
             tempEdge: [],
             instructionMess: "",
-        }
+        };
 	}
 
     if(action.type === "CLEAR_TEMP"){
-        
         let [tempVertexList, tempEdgeList] = resetStatus();
-      
 		return {
             ...state,
             vertexList:tempVertexList,
             edgeList:tempEdgeList,
             tempEdge: [],
-            
-        }
-
+        };
     }
 
     if(action.type === 'CLOSE_EDGE_FORM'){
@@ -1322,7 +1286,7 @@ export const reducer = (state, action) => {
             tempEdge: [], openEdgeForm: false,
             vertexList: tempVertexList,
             instructionMess:"Click on any two vertices to draw an edge"
-        }
+        };
     }
 
 	if (action.type === 'ADD_VERTEX') {
@@ -1331,7 +1295,7 @@ export const reducer = (state, action) => {
             return{
                 ...state,
                 instructionMess:"You have reached the maximum number of vertices: 100",
-            }
+            };
         }
         const myCanvasContainer = document.getElementById("canvas-container");
         let tempX = x - myCanvasContainer.offsetLeft + myCanvasContainer.scrollLeft;
@@ -1340,7 +1304,7 @@ export const reducer = (state, action) => {
             return {
                 ...state,
                 tempEdge: [],
-            }
+            };
         }
         let temp = copyMatrix(state.matrix);
         let tempRow = [];
@@ -1365,21 +1329,21 @@ export const reducer = (state, action) => {
             matrix: temp,
             tempEdge: [],
             vertexList: [...state.vertexList, {x: tempX,y: tempY,value,status: ""}],
-        }
+        };
     }
 
     if(action.type === "ADD_1_VERTEX_TO_EDGE"){
         let vertex = action.payload;
         let temp = state.tempEdge.slice(0);
         let tempList = state.vertexList.slice(0);
-        temp.push({x: vertex.x, y: vertex.y, value: vertex.value})
+        temp.push({x: vertex.x, y: vertex.y, value: vertex.value});
         tempList[findVertex(vertex.value)].status="is-selecting";
         return {
             ...state,
             vertexList: tempList,
             tempEdge: temp,
             instructionMess: "Choose another vertex to create an edge !",
-        }
+        };
     }
 
     if(action.type === 'ADD_1_VERTEX_TO_TEMP'){
@@ -1403,11 +1367,11 @@ export const reducer = (state, action) => {
             tempEdge: temp,
             edgeList: tempEdgeList,
             instructionMess: "Choose another vertex!",
-        }
+        };
     }
 
     if(action.type === 'DUPLICATE_VERTEX'){
-        let tempVertexList = state.vertexList.slice(0)
+        let tempVertexList = state.vertexList.slice(0);
         let vertex1 = action.payload.vertex;
         let vertex2 = state.tempEdge[0];
         tempVertexList[findVertex(vertex1.value)].status = "";
@@ -1418,7 +1382,7 @@ export const reducer = (state, action) => {
             tempEdge: [],
             vertexList: tempVertexList,
             instructionMess: action.payload.message
-        }
+        };
     }
 
     if(action.type === 'OPEN_EDGE_FORM'){
@@ -1434,7 +1398,7 @@ export const reducer = (state, action) => {
             tempEdge: tempTempEdge,
             vertexList: tempVertexList,
             openEdgeForm: true,
-        }
+        };
     }
 
     if (action.type === 'ADD_EDGE') {
@@ -1445,7 +1409,6 @@ export const reducer = (state, action) => {
         let id = vertex1.value.toString() + vertex2.value.toString();
         let index = isInEdgeList(vertex1, vertex2, dir, state.edgeList);
         if(index === -1){
-            //Thêm mới
             let [length, angle] = calculateEdgeProp(vertex1, vertex2);
             let tempMatrix = state.matrix.slice(0);
             tempMatrix[vertex1.value-1][vertex2.value-1] = weight;
@@ -1524,10 +1487,9 @@ export const reducer = (state, action) => {
                 vertexList: tempVertexList,
                 tempEdge: [],
                 instructionMess: "Click on any two vertices to draw an edge"
-            }
+            };
         }
         else{
-            //cập nhật
             let tempMatrix = copyMatrix(state.matrix);
 
             tempEdgeList[index].weight = weight;
@@ -1540,7 +1502,7 @@ export const reducer = (state, action) => {
                 edgeList: tempEdgeList,
                 vertexList: tempVertexList,
                 instructionMess: "Click on any two vertices to draw an edge"
-            }
+            };
         }
     }
 
@@ -1556,10 +1518,10 @@ export const reducer = (state, action) => {
         }
         tempVertexList = tempVertexList.filter((item)=>{
             return item.value !== vertex.value;
-        })
+        });
         tempEdgeList = tempEdgeList.filter((item)=>{
             return item.vertex1.value !== vertex.value && item.vertex2.value !== vertex.value;
-        })
+        });
         if(tempVertexList.length === 0){
             tempMatrix = [];
         }
@@ -1583,7 +1545,7 @@ export const reducer = (state, action) => {
         }
         tempEdgeList = tempEdgeList.filter((edge)=>{
             return edge.id !== id;
-        })
+        });
 		return {
             ...state, 
             matrix: tempMatrix,
@@ -1615,7 +1577,7 @@ export const reducer = (state, action) => {
        
         resultPath.forEach((value)=>{
             tempVertexList[findVertex(value)].status = "is-in-SP";
-        })
+        });
        
         const n = resultPath.length;
         for(let i = 0 ; i < n ; i++){
@@ -1625,32 +1587,41 @@ export const reducer = (state, action) => {
             }
         }
         if(n === 0){
-            tempVertexList[findVertex(src.value)].status = "is-in-SP";
-            tempVertexList[findVertex(des.value)].status = "is-in-SP";
-       
+            tempVertexList[findVertex(src.value)].status = "no-SP";
+            tempVertexList[findVertex(des.value)].status = "no-SP";
+
         }
         let resultPathList = resultPaths.map((item, index)=>{
             let i = Math.floor(index/vertexAmount);
             let j = index%vertexAmount;
             if(state.matrix[i][j] !== "x"){
                 if(item.length === 0){
-                    return <span key={index}>Shortest path from {i + 1} to {j + 1}: Not Exist <br></br></span>
+                    if(i + 1 === src.value && j + 1 === des.value){
+                        return <span key={index} className="no-SP">Shortest path from {i + 1} to {j + 1}: Not Exist <br></br></span>;
+                    }
+                    else{
+                        return <span key={index}>Shortest path from {i + 1} to {j + 1}: Not Exist <br></br></span>;
+                    }
                 }else{
                     let path =item.join(" -> ");
-                    return <span key={index}>Shortest path from {i+ 1} to {j + 1}: {path}, Weight: {resultMatrix[i][j]} <br></br></span>
+                    if(i + 1 === src.value && j + 1 === des.value){
+                        return <span key={index} className="is-in-SP">Shortest path from {i+ 1} to {j + 1}: {path}, Weight: {resultMatrix[i][j]} <br></br></span>;
+                    }
+                    else{
+                        return <span key={index}>Shortest path from {i+ 1} to {j + 1}: {path}, Weight: {resultMatrix[i][j]} <br></br></span>;
+                    }
                 }
             }
             return "";
 
-        })
+        });
         return{
             ...state,
             tempEdge: [],
             vertexList: tempVertexList,
             edgeList: tempEdgeList,
             instructionMess:<span className="result-algo"> {resultPathList} </span>,
-
-        }
+        };
     }
     
     if(action.type === 'REMOVE_ALL'){
@@ -1675,7 +1646,7 @@ export const reducer = (state, action) => {
                 edgeList: tempEdgeList,
                 tempEdge: [],
                 instructionMess:"Your graph is empty !!"
-            }
+            };
         }
         if(state.isDirected !== 1){
             let N = state.matrix.length;
@@ -1697,7 +1668,7 @@ export const reducer = (state, action) => {
                     edgeList: tempEdgeList,
                     tempEdge: [],
                     instructionMess:"You graph is not a connected graph so it does not have any spanning tree"
-                }
+                };
             }
             let vertexListSize = tempVertexList.length;
             for(let i = 0; i < vertexListSize ; i++){
@@ -1714,8 +1685,6 @@ export const reducer = (state, action) => {
                     totalWeight += tempEdgeList[edgeIndex].weight;
                 }
             }
-           
-            
             return { 
                 ...state, 
                 vertexList: tempVertexList,
@@ -1724,8 +1693,6 @@ export const reducer = (state, action) => {
                 instructionMess:"Minimun Spanning Tree weight: " + totalWeight
             };
         }else{
-           
-            
             let roots = findMotherVertex(state.matrix);
             let numberOfRoot = roots.length;
             if(numberOfRoot === 0){
@@ -1739,7 +1706,6 @@ export const reducer = (state, action) => {
             }
             let matrix = copyMatrix(state.matrix);
             let n = matrix.length;
-            
             let resultMatrix = [];
             let minW = Infinity;
             for(let i = 0 ; i < numberOfRoot; i++){
@@ -1784,7 +1750,6 @@ export const reducer = (state, action) => {
                 instructionMess:"Minimum Directed Spanning Tree Weight: " + minW,
             };
         }
-		
     }
 
     if(action.type === 'START_DFS' || action.type === 'START_BFS'){
@@ -1821,24 +1786,22 @@ export const reducer = (state, action) => {
         }
       
         let [tempVertexList, tempEdgeList] = resetStatus();
-
         let resultList =[];
-      
         resultVertices.forEach((item)=>{
             const n = item.length;
             resultList.push(item.join(" "));
             for(let i = 0 ; i < n; i++){
                 tempVertexList[findVertex(item[i])].status = "is-in-DFS";
             }
-        })
+        });
         
         resultEdges.forEach(item=>{
             const n = item.length;
             for(let i = 0 ; i < n;i++){
-                tempEdgeList[findEdge(item[i][0], item[i][1])].status = "is-in-DFS"
+                tempEdgeList[findEdge(item[i][0], item[i][1])].status = "is-in-DFS";
 
             }
-        })
+        });
         resultList = resultList.join(" ");
     
         return {
@@ -1847,7 +1810,7 @@ export const reducer = (state, action) => {
             vertexList: tempVertexList,
             instructionMess: resultList,
             tempEdge: [],
-        }
+        };
     }
 
     if(action.type === 'BFS'){
@@ -1881,26 +1844,23 @@ export const reducer = (state, action) => {
             for(let i = 0 ; i < n; i++){
                 tempVertexList[findVertex(item[i])].status = "is-in-DFS";
             }
-        })
-   
+        });
         resultEdges.forEach(item=>{
             const n = item.length;
             for(let i = 0 ; i < n;i++){
-                tempEdgeList[findEdge(item[i][0], item[i][1])].status = "is-in-DFS"
+                tempEdgeList[findEdge(item[i][0], item[i][1])].status = "is-in-DFS";
 
             }
-        })
+        });
         resultList = resultList.join(" ");
-    
         return {
             ...state,
             edgeList: tempEdgeList,
             vertexList: tempVertexList,
             instructionMess: resultList,
             tempEdge: [],
-        }
+        };
     }
-    
     if(action.type === 'COUNT_CC'){
         let N = state.matrix.length;
         let [tempVertexList, tempEdgeList] = resetStatus();
@@ -1911,7 +1871,7 @@ export const reducer = (state, action) => {
                 edgeList: tempEdgeList,
                 tempEdge: [],
                 instructionMess:"Your graph is empty !"
-            }
+            };
         }
         let src = 0;
         for(let i = 0 ; i < N ; i++){
@@ -1925,14 +1885,11 @@ export const reducer = (state, action) => {
             let result = [];
             if(state.isDirected === 1){
                 result = countSCC(state.matrix);
-              
             }else{
                 result = DFS(state.matrix, src);
             }
             
             let resultVertices = result[0];
-            
-            
             const resultVerticesSize = resultVertices.length;
             for(let i = 0 ; i < resultVerticesSize; i++){
                 const tempSize = resultVertices[i].length;
@@ -1940,25 +1897,20 @@ export const reducer = (state, action) => {
                     resultVertices[i][j] += 1;
                 }
             }
-        
-            
+    
             let resultList = [];
-           
             let tempString = <span key="-1" >Amount of {state.isDirected === 1 ? "Strongly" : ""} Connected Component:  {resultVerticesSize} <br></br> </span>;
             resultList.push(tempString);
             let color = 0;
-    
             resultVertices.forEach((item)=>{
                 const n = item.length;
                 let temp = item.join(" ");
                 resultList.push(<span key={temp}>Component: {temp} <br></br></span>);
-                
-                
                 for(let i = 0 ; i < n; i++){
                     tempVertexList[findVertex(item[i])].status = "is-in-CC-" + color%10; 
                 }
                 color ++;
-            })
+            });
         
             return {
                 ...state,
@@ -1966,12 +1918,12 @@ export const reducer = (state, action) => {
                 vertexList: tempVertexList,
                 instructionMess: <span className="result-algo">{resultList}</span>,
                 tempEdge: [],
-            }
+            };
         }
         return {
             ...state,
             tempEdge: []
-        }
+        };
     }
 
     if(action.type === 'GET_DISTANCE_MATRIX'){
@@ -1983,35 +1935,31 @@ export const reducer = (state, action) => {
                 edgeList: tempEdgesList,
                 tempEdge: [],
                 instructionMess:"Your graph is empty !"
-            }
+            };
         }
         let matrix = state.matrix.slice(0);
         let displayMatrix = [];
         let n = matrix.length;
         for(let i = 0 ; i < n ; i++){
-            let temp = []
+            let temp = [];
             for(let j = 0 ; j < n; j++){
                 if(matrix[i][j] === Infinity){
                     temp.push(<td key = {"0" + i + j}>Inf</td>);
                 }else{
                     temp.push(<td key = {"0" + i + j}>{matrix[i][j]}</td>);
                 }
-               
-               
             }
             displayMatrix.push(<tr key = {i}>{temp}</tr>);
-            
         }
         return {
             ...state,
             vertexList: tempVertexList,
             edgeList: tempEdgesList,
             instructionMess:<table className="matrix"> <tbody>{displayMatrix}</tbody></table>
-        }
+        };
     }
 
     if(action.type === 'EULER_TRAIL'){
-      
         let matrix = copyMatrix(state.matrix);
         let screenResult = [];
         let [tempVertexList, tempEdgesList] = resetStatus();
@@ -2022,19 +1970,14 @@ export const reducer = (state, action) => {
                 edgeList: tempEdgesList,
                 tempEdge: [],
                 instructionMess:"Your graph is empty !"
-            }
+            };
         }
        
         if(state.isDirected !== 1){
-         
             let result = fleury(matrix, state.isDirected);
-         
             let resultSize = result.length;
-            
             if(resultSize === 1){
-               
-                let isEulerian = checkEulerian(state.matrix,  state.isDirected !== 1)
-             //||result[0][0][0] === result[0][edgeNum - 1][0]
+                let isEulerian = checkEulerian(state.matrix,  state.isDirected !== 1);
                 if(isEulerian === 0 ){
                     screenResult.push("This is an Eulerian graph");
                     screenResult.push(<br key={screenResult.length}></br>);
@@ -2128,7 +2071,7 @@ export const reducer = (state, action) => {
                 vertexList: tempVertexList,
                 edgeList: tempEdgesList,
                 instructionMess: <span>{screenResult}</span>
-            }
+            };
         }
     }
     
@@ -2145,7 +2088,7 @@ export const reducer = (state, action) => {
             }
         }
         let matrix = copyMatrix(state.matrix);
-        let circuit = hamilton(matrix, 1)
+        let circuit = hamilton(matrix, 1);
         let path = hamilton(matrix, 2);
         const n = state.vertexList.length;
         const pathSize = path.length;
@@ -2161,7 +2104,7 @@ export const reducer = (state, action) => {
                 vertexList: tempVertexList,
                 edgeList: tempEdgesList,
                 instructionMess:"Your graph is empty !"
-            }
+            };
         }
         if(n === 1){
             return {
@@ -2169,7 +2112,7 @@ export const reducer = (state, action) => {
                 vertexList: tempVertexList,
                 edgeList: tempEdgesList,
                 instructionMess:"Your graph have Hamilton Path",
-            }
+            };
         }
         if(n === 2){
             if(pathSize < 2){
@@ -2178,14 +2121,14 @@ export const reducer = (state, action) => {
                     vertexList: tempVertexList,
                     edgeList: tempEdgesList,
                     instructionMess:"Your graph does not have Hamilton Circuit or Hamilton path",
-                }
+                };
             }else{
                 return {
                     ...state,
                     vertexList: tempVertexList,
                     edgeList: tempEdgesList,
                     instructionMess:"Your graph have Hamiton Path: " + path.join(", "),
-                }
+                };
             }
         }
        
@@ -2196,7 +2139,7 @@ export const reducer = (state, action) => {
                     vertexList: tempVertexList,
                     edgeList: tempEdgesList,
                     instructionMess:"Your graph does not have Hamilton Circuit and Hamilton path",
-                }
+                };
             }
         }
         
@@ -2207,7 +2150,7 @@ export const reducer = (state, action) => {
                 vertexList: tempVertexList,
                 edgeList: tempEdgesList,
                 instructionMess:"Your graph have Hamilton Circuit: " + circuit.join(", "),
-            }
+            };
         }
        
         return{
@@ -2215,7 +2158,7 @@ export const reducer = (state, action) => {
             vertexList: tempVertexList,
             edgeList: tempEdgesList,
             instructionMess:"Your graph have Hamilton Path: " + path.join(", "),
-        }
+        };
     }
 
     if(action.type === "MOVE_VERTEX"){
@@ -2236,7 +2179,7 @@ export const reducer = (state, action) => {
                 return false;
             }
             return true;
-        })
+        });
         
         const n = state.matrix.length;
         let value = tempVertexList[index].value; 
@@ -2256,7 +2199,7 @@ export const reducer = (state, action) => {
             ...state,
             vertexList: tempVertexList,
             edgeList: tempEdgeList,
-        }
+        };
     }
 
     if(action.type === "CLEAR_AREA"){
@@ -2264,7 +2207,7 @@ export const reducer = (state, action) => {
             ...state,
             instructionMess: "",
             selectedArea: {x: 0, y: 0, width: 0, height: 0, isRender: false}
-        }
+        };
     }
 
     if(action.type === "DRAW_SELECTED_AREA"){
@@ -2301,7 +2244,6 @@ export const reducer = (state, action) => {
         }
         else if(area.origin[0] === "bottom" && area.origin[1] === 'right'){
             for(let i = 0 ; i < numberOfVertex; i++){
-
                 if(
                     tempVertexList[i].x <= area.x && tempVertexList[i].x >= area.x - area.width&&
                     tempVertexList[i].y <= area.y && tempVertexList[i].y >= area.y - area.height 
@@ -2331,15 +2273,15 @@ export const reducer = (state, action) => {
             ...state,
             vertexList: tempVertexList,
             selectedArea: {...area, isRender: true}
-        }
+        };
     }
 
     if(action.type === "MOVE_AREA"){
         let {x, y, index} = action.payload;
     
         let tempVertexList = copyArray(state.vertexList);
-        let tempEdgeList = copyArray(state.edgeList)
-        let dentaX = x - tempVertexList[index].x ;
+        let tempEdgeList = copyArray(state.edgeList);
+        let dentaX = x - tempVertexList[index].x;
         let dentaY = y - tempVertexList[index].y;
      
         const numberOfVertex = tempVertexList.length;
@@ -2358,12 +2300,12 @@ export const reducer = (state, action) => {
                 }
             }
             return true;
-        })
+        });
         for(let i = 0; i < numberOfVertex;i++){
             if(tempVertexList[i].status === 'is-in-select-to-move'){
                 let value1 = tempVertexList[i].value - 1;
                 for(let j = 0 ; j < numberOfVertex; j++){
-                    let value2 = tempVertexList[j].value - 1
+                    let value2 = tempVertexList[j].value - 1;
                     if(i !== j ){
                         if(state.matrix[value1][value2] !== Infinity){
                             addEdge(tempVertexList[i],  tempVertexList[j], tempEdgeList, state.isDirected, state.matrix[value1][value2]);
@@ -2380,7 +2322,7 @@ export const reducer = (state, action) => {
             ...state,
             vertexList: tempVertexList,
             edgeList: tempEdgeList,
-        }
+        };
     }
 
 	throw new Error('no matching action type');
